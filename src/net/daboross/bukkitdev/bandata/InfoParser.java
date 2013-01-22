@@ -94,9 +94,16 @@ public class InfoParser implements DataDisplayParser {
             banNumber = data.getBans().length - 1;
         }
         Ban banToView = data.getBans()[banNumber];
+        PData owner = rawData.getOwner();
+        String userName;
+        if (owner != null) {
+            userName = " " + owner.userName();
+        } else {
+            userName = "";
+        }
         String[] infoLines = new String[]{
             ColorL.MAIN + "Ban Data For Ban Number " + ColorL.NUMBER + banNumber
-            + ColorL.MAIN + " of player " + ColorL.NAME + rawData.getOwner().userName() + ColorL.MAIN + ":",
+            + ColorL.MAIN + " of player " + ColorL.NAME + userName + ColorL.MAIN + ":",
             ColorL.MAIN + "Ban Occurred " + ColorL.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorL.MAIN + " ago.",
             ColorL.MAIN + "Ban Reason: " + ColorL.NUMBER + banToView.getReason()};
         return infoLines;
