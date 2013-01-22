@@ -40,6 +40,7 @@ public class BanData extends JavaPlugin {
         } else {
             getLogger().log(Level.SEVERE, "Ban Data Command Not Found!");
         }
+        playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         currentInstance = this;
     }
 
