@@ -205,6 +205,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         Data rawData = pDataH.getCustomData(playerUserName, "bandata");
         if (rawData == null) {
             sender.sendMessage(ColorL.MAIN + "Found no ban data for Player " + ColorL.NAME + playerUserName + ColorL.MAIN + ".");
+            return;
         }
         BData banData = DataParser.parseFromlist(rawData.getData());
         if (args.length > 1) {
