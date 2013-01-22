@@ -40,23 +40,21 @@ public class BanDataCommandExecutor implements CommandExecutor {
         this.playerDataMain = bd.getPlayerData();
         this.banDataMain = bd;
         this.pDataH = playerDataMain.getHandler();
-        aliasMap.put("?", "?");
-        aliasMap.put("help", "?");
-        isConsoleMap.put("?", true);
-        permMap.put("?", "bandata.help");
-        helpList.put("?", "This Command Views This Page");
+        initCommand("?", new String[]{"help"}, true, "bandata.help", "This Command Views This Page");
+        initCommand("ban", new String[]{}, true, "bandata.ban",
+                (ColorL.ARGS + "<Player> <Reason>" + ColorL.HELP + " Bans A Player With PEX and records Info."));
+        initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban",
+                (ColorL.ARGS + "<Player>" + ColorL.HELP + " Views Ban Info On a Player"));
+    }
 
-        aliasMap.put("ban", "ban");
-        isConsoleMap.put("ban", true);
-        permMap.put("ban", "bandata.ban");
-        helpList.put("ban", ColorL.ARGS + "<Player> <Reason>" + ColorL.HELP + " Bans A Player With PEX and records Info.");
-
-        aliasMap.put("viewban", "viewban");
-        aliasMap.put("vb", "viewban");
-        aliasMap.put("i", "viewban");
-        isConsoleMap.put("viewban", true);
-        permMap.put("viewban", "bandata.viewinfo");
-        helpList.put("viewban", ColorL.ARGS + "<Player> <Ban Number> (or just <Player> if you want to see how many bans there are)" + ColorL.HELP + " Views Ban Info On a Player");
+    private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
+        aliasMap.put(cmd, cmd);
+        for (String alias : aliases) {
+            aliasMap.put(alias, cmd);
+        }
+        isConsoleMap.put(cmd, isConsole);
+        permMap.put(cmd, permission);
+        helpList.put(cmd, helpString);
     }
 
     @Override
@@ -207,8 +205,16 @@ public class BanDataCommandExecutor implements CommandExecutor {
             return;
         }
         BData banData = DataParser.parseFromlist(rawData.getData());
-        if (args.length > 1) {
-            int number;
+        int number = -1;
+        if (args.length < 2) {
+            if (banData.getBans().length < 2) {
+                number = 0;
+            }
+            sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
+            sender.sendMessage(ColorL.MAIN + "Type " + ColorL.CMD + "/" + cmd.getLabel() + " " + ColorL.SUBCMD + aliasLabel + " " + ColorL.ARGS + args[0] + "{ 0 - " + (banData.getBans().length - 1) + " }" + ColorL.MAIN + " for more info on a ban");
+            return;
+        }
+        if (number == -1) {
             try {
                 number = Integer.valueOf(args[1]);
             } catch (Exception e) {
@@ -216,11 +222,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
                 return;
             }
-            sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
-        } else {
-            sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-            sender.sendMessage(ColorL.MAIN + "Type " + ColorL.CMD + "/" + cmd.getLabel() + " " + ColorL.SUBCMD + aliasLabel + " " + ColorL.ARGS + args[0] + "{ 0 - " + banData.getBans().length + " }" + ColorL.MAIN + " for more info on a ban");
         }
+        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
 
     private String getHelpMessage(String alias, String baseCommand) {
