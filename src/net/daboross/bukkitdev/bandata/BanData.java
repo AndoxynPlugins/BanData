@@ -1,6 +1,5 @@
 package net.daboross.bukkitdev.bandata;
 
-import java.util.Arrays;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.PlayerData;
 import org.bukkit.Bukkit;
