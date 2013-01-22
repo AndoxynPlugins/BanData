@@ -1,6 +1,6 @@
 name: BanData
 main: net.daboross.bukkitdev.bandata.BanData
-version: 0.4
+version: 0.5
 description: This plugin is an extension of PlayerData that records BanData
 author: Dabo Ross
 depend: [PermissionsEx, PlayerData]
@@ -15,7 +15,7 @@ permissions:
     description: Gives access to all BanData commands
     children:
       bandata.help: true
-      bandata.viewiban: true
+      bandata.viewban: true
       bandata.ban: true
       bandata.admin: true
     default: false
