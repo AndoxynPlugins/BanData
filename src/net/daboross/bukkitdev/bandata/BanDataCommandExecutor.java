@@ -209,10 +209,11 @@ public class BanDataCommandExecutor implements CommandExecutor {
         if (args.length < 2) {
             if (banData.getBans().length < 2) {
                 number = 0;
+            } else {
+                sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
+                sender.sendMessage(ColorL.MAIN + "Type " + ColorL.CMD + "/" + cmd.getLabel() + " " + ColorL.SUBCMD + aliasLabel + " " + ColorL.ARGS + args[0] + "{ 0 - " + (banData.getBans().length - 1) + " }" + ColorL.MAIN + " for more info on a ban");
+                return;
             }
-            sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-            sender.sendMessage(ColorL.MAIN + "Type " + ColorL.CMD + "/" + cmd.getLabel() + " " + ColorL.SUBCMD + aliasLabel + " " + ColorL.ARGS + args[0] + "{ 0 - " + (banData.getBans().length - 1) + " }" + ColorL.MAIN + " for more info on a ban");
-            return;
         }
         if (number == -1) {
             try {
