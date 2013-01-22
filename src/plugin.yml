@@ -23,11 +23,11 @@ permissions:
     description: Allows you to use /bd ?
     default: true
   bandata.viewinfo:
-    description: Allows you to view Ban Data
+    description: Allows you to view Ban Data.
     default: true
   bandata.ban:
-    description: Allows you to ban users.
+    description: Allows you to Ban Users.
     default: false
   bandata.admin:
-    description: BanData Admin
+    description: Allows you to delete Ban Data.
     default: false
