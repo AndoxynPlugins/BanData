@@ -57,7 +57,6 @@ public class BanDataCommandExecutor implements CommandExecutor {
         isConsoleMap.put("viewban", true);
         permMap.put("viewban", "bandata.viewinfo");
         helpList.put("viewban", ColorL.ARGS + "<Player> <Ban Number> (or just <Player> if you want to see how many bans there are)" + ColorL.HELP + " Views Ban Info On a Player");
-
     }
 
     @Override
@@ -155,7 +154,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         String oldGroup = null;
         for (PermissionGroup pg : oldGroups) {
             if (pg.has("basic")) {
-                oldGroup = pg.toString();
+                oldGroup = pg.getName();
             }
         }
         if (oldGroup == null) {
