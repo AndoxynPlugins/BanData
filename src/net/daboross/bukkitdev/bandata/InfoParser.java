@@ -13,9 +13,9 @@ import net.daboross.bukkitdev.playerdata.PlayerData;
  * @author daboross
  */
 public class InfoParser implements DataDisplayParser {
-    
+
     private static InfoParser instance;
-    
+
     private InfoParser() {
     }
 
@@ -101,7 +101,7 @@ public class InfoParser implements DataDisplayParser {
         } else {
             userName = "";
         }
-        String[] infoLines = new String[4];
+        String[] infoLines = new String[5];
         infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
         infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
         infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
@@ -110,9 +110,10 @@ public class InfoParser implements DataDisplayParser {
         } else {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
         }
+        infoLines[4] = ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + banToView.getOldGroup() + ColorList.MAIN + " before they were banned.";
         return infoLines;
     }
-    
+
     public static InfoParser getInstance() {
         if (instance == null) {
             instance = new InfoParser();
