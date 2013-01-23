@@ -12,6 +12,7 @@ import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +46,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         initCommand("ban", new String[]{}, true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
         initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
-        initCommand("listbans", new String[]{"lb", "listb", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
+        initCommand("listbans", new String[]{"lb","bl", "list", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
     }
 
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -147,7 +148,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             return;
         }
         String playerToBanUserName = pDataH.getFullUsername(args[0]);
-        OfflinePlayer playerToBan = Bukkit.getOfflinePlayer(playerToBanUserName);
+        OfflinePlayer playerToBan = pDataH.getPData(playerToBanUserName).getOfflinePlayer();
         if (!playerToBan.hasPlayedBefore()) {
             banDataMain.getLogger().log(Level.SEVERE, "Player Username Passed By Player Data Hasn't Played Before!!!");
             sender.sendMessage(ColorList.ERROR + "Error!");
@@ -164,6 +165,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         for (PermissionGroup pg : oldGroups) {
             if (pg.has("basic")) {
                 oldGroup = pg.getName();
+                break;
             }
         }
         if (oldGroup == null) {
@@ -191,7 +193,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         String[] newRawBanData = DataParser.parseToList(banData);
         Data banDataToSet = new Data("bandata", newRawBanData);
         pDataH.addCustomData(playerToBanUserName, banDataToSet);
-
+        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + ColorList.BROADCAST + "Player " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
     }
 
     private void runViewBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
@@ -239,6 +241,61 @@ public class BanDataCommandExecutor implements CommandExecutor {
     }
 
     private void runBanTpCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
+        if (args.length < 1) {
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
+            sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+            return;
+        }
+        if (args.length > 2) {
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorList.SUBCMD + aliasLabel);
+            sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+            return;
+        }
+        String playerUserName = pDataH.getFullUsername(args[0]);
+        if (playerUserName == null) {
+            sender.sendMessage(ColorList.MAIN + "The Player " + ColorList.NAME + args[0] + ColorList.MAIN + " was not found.");
+            return;
+        }
+        Data rawData = pDataH.getCustomData(playerUserName, "bandata");
+        if (rawData == null) {
+            sender.sendMessage(ColorList.MAIN + "Found no ban data for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + ".");
+            return;
+        }
+        BData banData = DataParser.parseFromlist(rawData);
+        int number = -1;
+        if (args.length < 2) {
+            if (banData.getBans().length < 2) {
+                number = 0;
+            } else {
+                sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
+                sender.sendMessage(ColorList.MAIN + "Type " + ColorList.CMD + "/" + cmd.getLabel() + " " + ColorList.SUBCMD + aliasLabel + " " + ColorList.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorList.MAIN + " for more info on a ban");
+                return;
+            }
+        }
+        if (number == -1) {
+            try {
+                number = Integer.valueOf(args[1]);
+            } catch (Exception e) {
+                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
+                sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+                return;
+            }
+        }
+        if (banData.getBans()[number].isConsoleBan()) {
+            sender.sendMessage(ColorList.MAIN + "Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + " Does Not Have a Position Associated With It.");
+            return;
+        }
+        Player player = (Player) sender;
+        Ban ban = banData.getBans()[number];
+        World world = Bukkit.getServer().getWorld(ban.getWorld());
+        if (world == null) {
+            sender.sendMessage(ColorList.ERROR + "Could Not Find The World Associated With Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for Player " + ColorList.NAME + playerUserName);
+            return;
+        }
+        sender.sendMessage(ColorList.MAIN + "Teleporting You to Position Associated With Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for " + ColorList.NAME + playerUserName);
+        Location loc = new Location(world, (double) ban.getXPos(), (double) ban.getYPos(), (double) ban.getZPos());
+        player.teleport(loc);
+        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
 
     private void runListBansCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
