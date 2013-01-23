@@ -15,9 +15,9 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
  * @author daboross
  */
 public class InfoParser implements DataDisplayParser {
-
+    
     private static InfoParser instance;
-
+    
     private InfoParser() {
     }
 
@@ -107,15 +107,14 @@ public class InfoParser implements DataDisplayParser {
         infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
         infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
         infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
-        PermissionUser user = PermissionsEx.getUser(userName);
-        if (user.inGroup("Banned")) {
+        if (owner.getGroup().equalsIgnoreCase("Banned")) {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Currently Banned";
         } else {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
         }
         return infoLines;
     }
-
+    
     public static InfoParser getInstance() {
         if (instance == null) {
             instance = new InfoParser();
