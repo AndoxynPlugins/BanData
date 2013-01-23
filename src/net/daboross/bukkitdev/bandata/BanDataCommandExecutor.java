@@ -161,10 +161,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
         }
         String playerToBanUserName = pDataH.getFullUsername(args[0]);
         PData playerToBanPData = pDataH.getPData(playerToBanUserName);
-        OfflinePlayer playerToBan = playerToBanPData.getOfflinePlayer();
         String reason = "";
         for (int i = 1; i < args.length; i++) {
-            reason += args[i];
+            reason += " " + args[i];
         }
         sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
         PermissionUser permPlayer = playerToBanPData.getPermUser();
