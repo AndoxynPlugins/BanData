@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
+import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerData;
 import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
 import org.bukkit.Bukkit;
@@ -17,9 +18,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 /**
  *
@@ -47,7 +46,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         initCommand("ban", new String[]{}, true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
         initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
-        initCommand("listbans", new String[]{"lb", "bl", "list", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
+        initCommand("listbans", new String[]{"list", "bl", "lb"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
     }
 
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -161,7 +160,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
             return;
         }
         String playerToBanUserName = pDataH.getFullUsername(args[0]);
-        OfflinePlayer playerToBan = pDataH.getPData(playerToBanUserName).getOfflinePlayer();
+        PData playerToBanPData = pDataH.getPData(playerToBanUserName);
+        OfflinePlayer playerToBan = playerToBanPData.getOfflinePlayer();
         if (!playerToBan.hasPlayedBefore()) {
             banDataMain.getLogger().log(Level.SEVERE, "Player Username Passed By Player Data Hasn't Played Before!!!");
             sender.sendMessage(ColorList.ERROR + "Error!");
@@ -172,15 +172,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
             reason += args[i];
         }
         sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
-        PermissionUser permPlayer = PermissionsEx.getUser(playerToBanUserName);
-        PermissionGroup[] oldGroups = permPlayer.getGroups();
-        String oldGroup = null;
-        for (PermissionGroup pg : oldGroups) {
-            if (pg.has("basic")) {
-                oldGroup = pg.getName();
-                break;
-            }
-        }
+        PermissionUser permPlayer = playerToBanPData.getPermUser();
+        String oldGroup = playerToBanPData.getGroup();
         if (oldGroup == null) {
             oldGroup = "Basic";
         }
@@ -206,7 +199,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         String[] newRawBanData = DataParser.parseToList(banData);
         Data banDataToSet = new Data("bandata", newRawBanData);
         pDataH.addCustomData(playerToBanUserName, banDataToSet);
-        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + ColorList.BROADCAST + "Player " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
+        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
     }
 
     private void runViewBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
