@@ -30,6 +30,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
     private final Map<String, String> aliasMap = new HashMap<>();
     private final Map<String, Boolean> isConsoleMap = new HashMap<>();
     private final Map<String, String> helpList = new HashMap<>();
+    private final Map<String, String[]> helpAliasMap = new HashMap<>();
     private final Map<String, String> permMap = new HashMap<>();
     private PlayerData playerDataMain;
     private PlayerDataHandler pDataH;
@@ -46,7 +47,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         initCommand("ban", new String[]{}, true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
         initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
-        initCommand("listbans", new String[]{"lb","bl", "list", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
+        initCommand("listbans", new String[]{"lb", "bl", "list", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
     }
 
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -57,6 +58,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         isConsoleMap.put(cmd, isConsole);
         permMap.put(cmd, permission);
         helpList.put(cmd, helpString);
+        helpAliasMap.put(cmd, aliases);
     }
 
     @Override
@@ -120,8 +122,10 @@ public class BanDataCommandExecutor implements CommandExecutor {
     private void runHelpCommand(CommandSender sender, Command cmd, String[] args) {
         sender.sendMessage(ColorList.MAIN + "List Of Possible Sub Commands:");
         for (String str : aliasMap.keySet()) {
-            if (sender.hasPermission(permMap.get(aliasMap.get(str)))) {
-                sender.sendMessage(getHelpMessage(str, cmd.getLabel()));
+            if (str.equalsIgnoreCase(aliasMap.get(str))) {
+                if (sender.hasPermission(str)) {
+                    sender.sendMessage(getMultipleAliasHelpMessage(str, cmd.getLabel()));
+                }
             }
         }
     }
@@ -129,6 +133,15 @@ public class BanDataCommandExecutor implements CommandExecutor {
     private String getHelpMessage(String alias, String baseCommand) {
         String str = aliasMap.get(alias);
         return (ColorList.CMD + "/" + baseCommand + ColorList.SUBCMD + " " + alias + ColorList.HELP + " " + helpList.get(aliasMap.get(str)));
+    }
+
+    private String getMultipleAliasHelpMessage(String subcmd, String baseCommand) {
+        String[] aliasList = helpAliasMap.get(subcmd);
+        String commandList = "";
+        for (String str : aliasList) {
+            commandList += ColorList.DIVIDER + "/" + ColorList.SUBCMD + str;
+        }
+        return (ColorList.CMD + "/" + baseCommand + ColorList.SUBCMD + " " + commandList + ColorList.HELP + " " + helpList.get(subcmd));
     }
 
     private void runBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
