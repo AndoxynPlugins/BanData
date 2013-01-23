@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.ColorL;
+import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PlayerData;
 import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
@@ -42,9 +42,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
         this.pDataH = playerDataMain.getHandler();
         initCommand("?", new String[]{"help"}, true, "bandata.help", "This Command Views This Page");
         initCommand("ban", new String[]{}, true, "bandata.ban",
-                (ColorL.ARGS + "<Player> <Reason>" + ColorL.HELP + " Bans A Player With PEX and records Info."));
+                (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and records Info."));
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban",
-                (ColorL.ARGS + "<Player>" + ColorL.HELP + " Views Ban Info On a Player"));
+                (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
     }
     
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -61,8 +61,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("bd")) {
             if (args.length < 1) {
-                sender.sendMessage(ColorL.MAIN + "This is a base command, Please Use a sub command after it.");
-                sender.sendMessage(ColorL.MAIN + "To see all possible sub commands, type " + ColorL.CMD + "/" + cmd.getName() + ColorL.SUBCMD + " ?");
+                sender.sendMessage(ColorList.MAIN + "This is a base command, Please Use a sub command after it.");
+                sender.sendMessage(ColorList.MAIN + "To see all possible sub commands, type " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " ?");
                 return true;
             }
             String commandName;
@@ -70,13 +70,13 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 commandName = aliasMap.get(args[0].toLowerCase());
                 Bukkit.getServer().getLogger().log(Level.INFO, (sender.getName() + " used " + commandName));
             } else {
-                sender.sendMessage(ColorL.MAIN + "The SubCommand: " + ColorL.CMD + args[0] + ColorL.MAIN + " Does not exist.");
-                sender.sendMessage(ColorL.MAIN + "To see all possible sub commands, type " + ColorL.CMD + "/" + cmd.getName() + ColorL.SUBCMD + " ?");
+                sender.sendMessage(ColorList.MAIN + "The SubCommand: " + ColorList.CMD + args[0] + ColorList.MAIN + " Does not exist.");
+                sender.sendMessage(ColorList.MAIN + "To see all possible sub commands, type " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " ?");
                 return true;
             }
             if (sender instanceof Player) {
                 if (!sender.hasPermission(permMap.get(commandName))) {
-                    sender.sendMessage(ColorL.NOPERM + "You don't have permission to do this command!");
+                    sender.sendMessage(ColorList.NOPERM + "You don't have permission to do this command!");
                     return true;
                 }
             }
@@ -88,7 +88,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
             if (!(sender instanceof Player)) {
                 if (!isConsole) {
-                    sender.sendMessage(ColorL.NOPERM + "This command must be run by a player");
+                    sender.sendMessage(ColorList.NOPERM + "This command must be run by a player");
                     return true;
                 }
             }
@@ -113,7 +113,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
     }
     
     private void runHelpCommand(CommandSender sender, Command cmd, String[] args) {
-        sender.sendMessage(ColorL.MAIN + "List Of Possible Sub Commands:");
+        sender.sendMessage(ColorList.MAIN + "List Of Possible Sub Commands:");
         for (String str : aliasMap.keySet()) {
             if (sender.hasPermission(permMap.get(aliasMap.get(str)))) {
                 sender.sendMessage(getHelpMessage(str, cmd.getLabel()));
@@ -123,17 +123,17 @@ public class BanDataCommandExecutor implements CommandExecutor {
     
     private void runBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 2) {
-            sender.sendMessage(ColorL.ILLEGALARGUMENT + "Please Specify a Player Name and a Ban Reason!");
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name and a Ban Reason!");
             sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
             return;
         }
         
         if (!pDataH.doesPlayerExists(args[0])) {
-            sender.sendMessage(ColorL.MAIN + "No Player whoes full name matches " + ColorL.NAME + args[0] + ColorL.MAIN + " was found.");
-            sender.sendMessage(ColorL.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
+            sender.sendMessage(ColorList.MAIN + "No Player whoes full name matches " + ColorList.NAME + args[0] + ColorList.MAIN + " was found.");
+            sender.sendMessage(ColorList.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
             String fullUserName = pDataH.getFullUsername(args[0]);
             if (fullUserName != null) {
-                sender.sendMessage(ColorL.MAIN + "Did you mean " + ColorL.NAME + fullUserName + ColorL.MAIN + "?");
+                sender.sendMessage(ColorList.MAIN + "Did you mean " + ColorList.NAME + fullUserName + ColorList.MAIN + "?");
             }
             return;
         }
@@ -141,14 +141,14 @@ public class BanDataCommandExecutor implements CommandExecutor {
         OfflinePlayer playerToBan = Bukkit.getOfflinePlayer(playerToBanUserName);
         if (!playerToBan.hasPlayedBefore()) {
             banDataMain.getLogger().log(Level.SEVERE, "Player Username Passed By Player Data Hasn't Played Before!!!");
-            sender.sendMessage(ColorL.ERROR + "Error!");
+            sender.sendMessage(ColorList.ERROR + "Error!");
             return;
         }
         String reason = "";
         for (int i = 1; i < args.length; i++) {
             reason += args[i];
         }
-        sender.sendMessage(ColorL.MAIN + "Banning " + ColorL.NAME + playerToBanUserName + ColorL.MAIN + " for " + ColorL.NUMBER + reason);
+        sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
         PermissionUser permPlayer = PermissionsEx.getUser(playerToBanUserName);
         PermissionGroup[] oldGroups = permPlayer.getGroups();
         String oldGroup = null;
@@ -187,23 +187,23 @@ public class BanDataCommandExecutor implements CommandExecutor {
     
     private void runViewBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ColorL.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
             sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
             return;
         }
         if (args.length > 2) {
-            sender.sendMessage(ColorL.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorL.SUBCMD + aliasLabel);
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorList.SUBCMD + aliasLabel);
             sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
             return;
         }
         String playerUserName = pDataH.getFullUsername(args[0]);
         if (playerUserName == null) {
-            sender.sendMessage(ColorL.MAIN + "The Player " + ColorL.NAME + args[0] + ColorL.MAIN + " was not found.");
+            sender.sendMessage(ColorList.MAIN + "The Player " + ColorList.NAME + args[0] + ColorList.MAIN + " was not found.");
             return;
         }
         Data rawData = pDataH.getCustomData(playerUserName, "bandata");
         if (rawData == null) {
-            sender.sendMessage(ColorL.MAIN + "Found no ban data for Player " + ColorL.NAME + playerUserName + ColorL.MAIN + ".");
+            sender.sendMessage(ColorList.MAIN + "Found no ban data for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + ".");
             return;
         }
         BData banData = DataParser.parseFromlist(rawData.getData());
@@ -213,7 +213,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 number = 0;
             } else {
                 sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-                sender.sendMessage(ColorL.MAIN + "Type " + ColorL.CMD + "/" + cmd.getLabel() + " " + ColorL.SUBCMD + aliasLabel + " " + ColorL.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorL.MAIN + " for more info on a ban");
+                sender.sendMessage(ColorList.MAIN + "Type " + ColorList.CMD + "/" + cmd.getLabel() + " " + ColorList.SUBCMD + aliasLabel + " " + ColorList.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorList.MAIN + " for more info on a ban");
                 return;
             }
         }
@@ -221,7 +221,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             try {
                 number = Integer.valueOf(args[1]);
             } catch (Exception e) {
-                sender.sendMessage(ColorL.ERROR_ARGS + args[1] + ColorL.ERROR + " is not a number.");
+                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
                 sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
                 return;
             }
@@ -231,6 +231,6 @@ public class BanDataCommandExecutor implements CommandExecutor {
     
     private String getHelpMessage(String alias, String baseCommand) {
         String str = aliasMap.get(alias);
-        return (ColorL.CMD + "/" + baseCommand + ColorL.SUBCMD + " " + alias + ColorL.HELP + " " + helpList.get(aliasMap.get(str)));
+        return (ColorList.CMD + "/" + baseCommand + ColorList.SUBCMD + " " + alias + ColorList.HELP + " " + helpList.get(aliasMap.get(str)));
     }
 }

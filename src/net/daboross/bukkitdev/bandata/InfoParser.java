@@ -2,7 +2,7 @@ package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import net.daboross.bukkitdev.playerdata.ColorL;
+import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.DataDisplayParser;
 import net.daboross.bukkitdev.playerdata.PlayerData;
@@ -30,7 +30,7 @@ public class InfoParser implements DataDisplayParser {
             return new String[0];
         }
         if (!rawData.getName().equalsIgnoreCase("bandata")) {
-            return new String[]{ColorL.ILLEGALARGUMENT + "Illegal Data"};
+            return new String[]{ColorList.ILLEGALARGUMENT + "Illegal Data"};
         }
         BData banData = DataParser.parseFromlist(rawData.getData());
         PData owner = rawData.getOwner();
@@ -41,9 +41,9 @@ public class InfoParser implements DataDisplayParser {
             userName = "";
         }
         return new String[]{
-                    ColorL.MAIN + "Player" + ColorL.NAME + userName
-                    + ColorL.MAIN + " has " + ColorL.NUMBER + banData.getBans().length
-                    + ColorL.MAIN + " recorded bans."};
+                    ColorList.MAIN + "Player" + ColorList.NAME + userName
+                    + ColorList.MAIN + " has " + ColorList.NUMBER + banData.getBans().length
+                    + ColorList.MAIN + " recorded bans."};
     }
 
     /**
@@ -57,7 +57,7 @@ public class InfoParser implements DataDisplayParser {
             return new String[0];
         }
         if (!rawData.getName().equalsIgnoreCase("bandata")) {
-            return new String[]{ColorL.ILLEGALARGUMENT + "Illegal Data"};
+            return new String[]{ColorList.ILLEGALARGUMENT + "Illegal Data"};
         }
         BData banData = DataParser.parseFromlist(rawData.getData());
         PData owner = rawData.getOwner();
@@ -68,7 +68,7 @@ public class InfoParser implements DataDisplayParser {
             userName = "";
         }
         ArrayList<String> returnList = new ArrayList<>();
-        returnList.add(ColorL.MAIN + "Ban Data Info from last ban of" + ColorL.NAME + userName);
+        returnList.add(ColorList.MAIN + "Ban Data Info from last ban of" + ColorList.NAME + userName);
         returnList.addAll(Arrays.asList(banInfo(rawData, banData, -1)));
         return returnList.toArray(new String[0]);
     }
@@ -102,10 +102,10 @@ public class InfoParser implements DataDisplayParser {
             userName = "";
         }
         String[] infoLines = new String[]{
-            ColorL.MAIN + "Ban Data For Ban Number " + ColorL.NUMBER + banNumber
-            + ColorL.MAIN + " of player " + ColorL.NAME + userName + ColorL.MAIN + ":",
-            ColorL.MAIN + "Ban Occurred " + ColorL.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorL.MAIN + " ago.",
-            ColorL.MAIN + "Ban Reason: " + ColorL.NUMBER + banToView.getReason()};
+            ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber
+            + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":",
+            ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.",
+            ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason()};
         return infoLines;
     }
 
