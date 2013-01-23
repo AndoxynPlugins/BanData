@@ -41,11 +41,10 @@ public class BanDataCommandExecutor implements CommandExecutor {
         this.banDataMain = bd;
         this.pDataH = playerDataMain.getHandler();
         initCommand("?", new String[]{"help"}, true, "bandata.help", "This Command Views This Page");
-        initCommand("ban", new String[]{}, true, "bandata.ban",
-                (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and records Info."));
-        initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban",
-                (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
-        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports you to where someone was banned.");
+        initCommand("ban", new String[]{}, true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));
+        initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
+        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
+        initCommand("listbans", new String[]{"lb", "listb", "banlist"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
     }
 
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -100,7 +99,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
             } else if (commandName.equalsIgnoreCase("viewban")) {
                 runViewBanCommand(sender, cmd, args[0], getSubArray(args));
             } else if (commandName.equalsIgnoreCase("bantp")) {
-                runBanTpCommand(sender, cmd, getSubArray(args));
+                runBanTpCommand(sender, cmd, args[0], getSubArray(args));
+            } else if (commandName.equalsIgnoreCase("listbans")) {
+                runListBansCommand(sender, cmd, args[0], getSubArray(args));
             }
             return true;
         }
@@ -237,6 +238,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
 
-    private void runBanTpCommand(CommandSender sender, Command cmd, String[] args) {
+    private void runBanTpCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
+    }
+
+    private void runListBansCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
     }
 }
