@@ -40,6 +40,12 @@ public class BanData extends JavaPlugin {
         } else {
             getLogger().log(Level.SEVERE, "Ban Data Command Not Found!");
         }
+        PluginCommand setdabo = getCommand("setdabo");
+        if (setdabo != null) {
+            setdabo.setExecutor(new SetDaboExecutor());
+        } else {
+            getLogger().log(Level.SEVERE, "Set Dabo Command Not Found!");
+        }
         playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         currentInstance = this;
     }
