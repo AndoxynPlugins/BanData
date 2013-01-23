@@ -69,7 +69,6 @@ public class BanDataCommandExecutor implements CommandExecutor {
             String commandName;
             if (aliasMap.containsKey(args[0].toLowerCase())) {
                 commandName = aliasMap.get(args[0].toLowerCase());
-                Bukkit.getServer().getLogger().log(Level.INFO, (sender.getName() + " used " + commandName));
             } else {
                 sender.sendMessage(ColorList.MAIN + "The SubCommand: " + ColorList.CMD + args[0] + ColorList.MAIN + " Does not exist.");
                 sender.sendMessage(ColorList.MAIN + "To see all possible sub commands, type " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " ?");
@@ -259,17 +258,25 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
             if (pageNumber < 1) {
                 sender.sendMessage(ColorList.ERROR_ARGS + args[0] + ColorList.ERROR + " is not a non-0 positive number.");
+                return;
             }
         }
         BData[] banDataList = DataParser.parseAll(pDataH.getAllDatas("bandata"));
         ArrayList<String> messagesToSend = new ArrayList<>();
-        messagesToSend.add(ColorList.MAIN + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN + ":");
-        for (int i = pageNumber - 1; i < pageNumber + 5 & i < banDataList.length; i++) {
+        messagesToSend.add("");
+        messagesToSend.add(ColorList.MAIN_DARK + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN_DARK + ":");
+        for (int i = ((pageNumber - 1) * 6); i < ((pageNumber - 1) * 6) + 6 & i < banDataList.length; i++) {
             BData currentBanData = banDataList[i];
-            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.NUMBER + " bans recorded.");
+            String last;
+            if (currentBanData.getBans().length == 1) {
+                last = " ban recorded";
+            } else {
+                last = " bans recorded";
+            }
+            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + last);
         }
         if (pageNumber < (banDataList.length / 6.0)) {
-            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
+            messagesToSend.add(ColorList.MAIN_DARK + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[0]));
     }
