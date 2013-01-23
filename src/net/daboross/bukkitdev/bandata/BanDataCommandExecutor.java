@@ -24,7 +24,7 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
  * @author daboross
  */
 public class BanDataCommandExecutor implements CommandExecutor {
-    
+
     private final Map<String, String> aliasMap = new HashMap<>();
     private final Map<String, Boolean> isConsoleMap = new HashMap<>();
     private final Map<String, String> helpList = new HashMap<>();
@@ -45,8 +45,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and records Info."));
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban",
                 (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
+        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports you to where someone was banned.");
     }
-    
+
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
         aliasMap.put(cmd, cmd);
         for (String alias : aliases) {
@@ -56,7 +57,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         permMap.put(cmd, permission);
         helpList.put(cmd, helpString);
     }
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("bd")) {
@@ -103,7 +104,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
         }
         return false;
     }
-    
+
     private String[] getSubArray(String[] array) {
         if (array.length > 1) {
             return Arrays.asList(array).subList(1, array.length).toArray(new String[0]);
@@ -111,7 +112,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             return new String[0];
         }
     }
-    
+
     private void runHelpCommand(CommandSender sender, Command cmd, String[] args) {
         sender.sendMessage(ColorList.MAIN + "List Of Possible Sub Commands:");
         for (String str : aliasMap.keySet()) {
@@ -120,14 +121,19 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
         }
     }
-    
+
+    private String getHelpMessage(String alias, String baseCommand) {
+        String str = aliasMap.get(alias);
+        return (ColorList.CMD + "/" + baseCommand + ColorList.SUBCMD + " " + alias + ColorList.HELP + " " + helpList.get(aliasMap.get(str)));
+    }
+
     private void runBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 2) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name and a Ban Reason!");
             sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
             return;
         }
-        
+
         if (!pDataH.doesPlayerExists(args[0])) {
             sender.sendMessage(ColorList.MAIN + "No Player whoes full name matches " + ColorList.NAME + args[0] + ColorList.MAIN + " was found.");
             sender.sendMessage(ColorList.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
@@ -168,7 +174,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             ban = new Ban(reason, oldGroup, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
         } else {
             ban = new Ban(reason, oldGroup, System.currentTimeMillis());
-            
+
         }
         Data rawData = pDataH.getCustomData(playerToBanUserName, "bandata");
         BData banData;
@@ -182,9 +188,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
         String[] newRawBanData = DataParser.parseToList(banData);
         Data banDataToSet = new Data("bandata", newRawBanData);
         pDataH.addCustomData(playerToBanUserName, banDataToSet);
-        
+
     }
-    
+
     private void runViewBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
@@ -227,10 +233,5 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
         }
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
-    }
-    
-    private String getHelpMessage(String alias, String baseCommand) {
-        String str = aliasMap.get(alias);
-        return (ColorList.CMD + "/" + baseCommand + ColorList.SUBCMD + " " + alias + ColorList.HELP + " " + helpList.get(aliasMap.get(str)));
     }
 }
