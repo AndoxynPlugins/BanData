@@ -7,8 +7,6 @@ import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.DataDisplayParser;
 import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerData;
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 /**
  *
