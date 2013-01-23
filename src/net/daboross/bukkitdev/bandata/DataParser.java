@@ -58,14 +58,19 @@ public class DataParser {
                 if (current.equalsIgnoreCase("ban")) {
                     if (currentBan.size() == 7) {
                         try {
+                            Ban b;
                             String reason = currentBan.get(0);
                             String oldGroup = currentBan.get(1);
                             long timeStamp = Long.valueOf(currentBan.get(2));
-                            long xPos = Long.valueOf(currentBan.get(3));
-                            long yPos = Long.valueOf(currentBan.get(4));
-                            long zPos = Long.valueOf(currentBan.get(5));
-                            String world = currentBan.get(6);
-                            Ban b = new Ban(reason, oldGroup, xPos, yPos, zPos, world, timeStamp);
+                            if (reason.equalsIgnoreCase("Unknown Reason")) {
+                                b = new Ban(reason, oldGroup, timeStamp);
+                            } else {
+                                long xPos = Long.valueOf(currentBan.get(3));
+                                long yPos = Long.valueOf(currentBan.get(4));
+                                long zPos = Long.valueOf(currentBan.get(5));
+                                String world = currentBan.get(6);
+                                b = new Ban(reason, oldGroup, xPos, yPos, zPos, world, timeStamp);
+                            }
                             banList.add(b);
                         } catch (Exception e) {
                             BanData.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
