@@ -16,6 +16,7 @@ permissions:
     children:
       bandata.help: true
       bandata.viewban: true
+      bandata.listbans: true
       bandata.ban: true
       bandata.admin: true
     default: false
@@ -24,6 +25,9 @@ permissions:
     default: true
   bandata.viewban:
     description: Allows you to view Ban Data.
+    default: true
+  bandata.listbans:
+    description: Allows you to List All Bans
     default: true
   bandata.ban:
     description: Allows you to Ban Users.
