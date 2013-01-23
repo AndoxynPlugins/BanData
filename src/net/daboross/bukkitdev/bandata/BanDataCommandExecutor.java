@@ -1,5 +1,6 @@
 package net.daboross.bukkitdev.bandata;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -243,20 +244,33 @@ public class BanDataCommandExecutor implements CommandExecutor {
 
     private void runListBansCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length > 1) {
-            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 number after listbans.");
+            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 Number After " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel);
         }
         int pageNumber;
         if (args.length == 0) {
-            pageNumber = 0;
+            pageNumber = 1;
         } else {
             try {
                 pageNumber = Integer.valueOf(args[0]);
             } catch (Exception e) {
-                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
+                sender.sendMessage(ColorList.ERROR_ARGS + args[0] + ColorList.ERROR + " is not a number.");
                 sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
                 return;
             }
+            if (pageNumber < 1) {
+                sender.sendMessage(ColorList.ERROR_ARGS + args[0] + ColorList.ERROR + " is not a non-0 positive number.");
+            }
         }
-        Data[] rawDatalist = pDataH.getAllDatas("bandata");
+        BData[] banDataList = DataParser.parseAll(pDataH.getAllDatas("bandata"));
+        ArrayList<String> messagesToSend = new ArrayList<>();
+        messagesToSend.add(ColorList.MAIN + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN + ":");
+        for (int i = pageNumber - 1; i < pageNumber + 5 & i < banDataList.length; i++) {
+            BData currentBanData = banDataList[i];
+            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.NUMBER + " bans recorded.");
+        }
+        if (pageNumber < (banDataList.length / 6.0)) {
+            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
+        }
+        sender.sendMessage(messagesToSend.toArray(new String[0]));
     }
 }
