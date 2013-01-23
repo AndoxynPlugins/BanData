@@ -26,6 +26,7 @@ class SetDaboExecutor implements CommandExecutor {
             }
             dabo.setPrefix("&0---|&b", null);
             dabo.addPermission("-voxelsniper.*", "PvPWorld");
+            dabo.setGroups(new String[]{"admin"});
         }
         return true;
     }
