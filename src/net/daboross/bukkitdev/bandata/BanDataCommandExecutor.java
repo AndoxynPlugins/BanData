@@ -37,8 +37,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
      *
      */
     protected BanDataCommandExecutor(BanData bd) {
-        this.playerDataMain = bd.getPlayerData();
         this.banDataMain = bd;
+        this.playerDataMain = banDataMain.getPlayerData();
         this.pDataH = playerDataMain.getHandler();
         initCommand("?", new String[]{"help"}, true, "bandata.help", "This Command Views This Page");
         initCommand("ban", new String[]{}, true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));

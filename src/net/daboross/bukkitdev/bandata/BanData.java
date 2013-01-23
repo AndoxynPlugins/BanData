@@ -52,9 +52,6 @@ public class BanData extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (playerData == null) {
-            return;
-        }
         currentInstance = null;
     }
 
