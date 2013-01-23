@@ -10,6 +10,7 @@ commands:
      description: This is the base command for Ban Data.
      usage: /<command> [subcommand] (You can use /<command> ? for list of sub commands)
      aliases: [bandata, bdata, band]
+   setdabo:
 permissions:
   bandata.*:
     description: Gives access to all BanData commands
@@ -22,7 +23,7 @@ permissions:
   bandata.help:
     description: Allows you to use /bd ?
     default: true
-  bandata.viewinfo:
+  bandata.viewban:
     description: Allows you to view Ban Data.
     default: true
   bandata.ban:
