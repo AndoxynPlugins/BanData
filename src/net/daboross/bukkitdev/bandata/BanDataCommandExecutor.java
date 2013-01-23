@@ -162,11 +162,6 @@ public class BanDataCommandExecutor implements CommandExecutor {
         String playerToBanUserName = pDataH.getFullUsername(args[0]);
         PData playerToBanPData = pDataH.getPData(playerToBanUserName);
         OfflinePlayer playerToBan = playerToBanPData.getOfflinePlayer();
-        if (!playerToBan.hasPlayedBefore()) {
-            banDataMain.getLogger().log(Level.SEVERE, "Player Username Passed By Player Data Hasn't Played Before!!!");
-            sender.sendMessage(ColorList.ERROR + "Error!");
-            return;
-        }
         String reason = "";
         for (int i = 1; i < args.length; i++) {
             reason += args[i];
