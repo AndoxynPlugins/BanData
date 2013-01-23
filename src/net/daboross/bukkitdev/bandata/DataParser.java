@@ -2,6 +2,7 @@ package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.playerdata.Data;
 
 /**
  *
@@ -33,11 +34,11 @@ public class DataParser {
         return returnList.toArray(new String[0]);
     }
 
-    protected static BData parseFromlist(String[] strl) {
-        if (strl == null) {
-            throw new IllegalArgumentException("File Can't Be Null");
+    protected static BData parseFromlist(Data data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Data Can't Be Null");
         }
-
+        String[] strl = data.getData();
         String current = "finding";
         ArrayList<String> currentBan = new ArrayList<>();
         ArrayList<Ban> banList = new ArrayList<>();
@@ -93,7 +94,15 @@ public class DataParser {
                 currentBan.add(currentString);
             }
         }
-        BData bData = new BData(banList.toArray(new Ban[0]));
+        BData bData = new BData(banList.toArray(new Ban[0]), data.getOwner());
         return bData;
+    }
+
+    protected static BData[] parseAll(Data[] data) {
+        BData[] returnList = new BData[data.length];
+        for (int i = 0; i < data.length; i++) {
+            returnList[i] = parseFromlist(data[i]);
+        }
+        return returnList;
     }
 }

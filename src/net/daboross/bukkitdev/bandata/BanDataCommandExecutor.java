@@ -183,9 +183,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
         BData banData;
         if (rawData == null) {
             Ban[] banList = new Ban[]{ban};
-            banData = new BData(banList);
+            banData = new BData(banList, pDataH.getPData(playerToBanUserName));
         } else {
-            banData = DataParser.parseFromlist(rawData.getData());
+            banData = DataParser.parseFromlist(rawData);
             banData.addBan(ban);
         }
         String[] newRawBanData = DataParser.parseToList(banData);
@@ -215,7 +215,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             sender.sendMessage(ColorList.MAIN + "Found no ban data for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + ".");
             return;
         }
-        BData banData = DataParser.parseFromlist(rawData.getData());
+        BData banData = DataParser.parseFromlist(rawData);
         int number = -1;
         if (args.length < 2) {
             if (banData.getBans().length < 2) {
@@ -242,5 +242,21 @@ public class BanDataCommandExecutor implements CommandExecutor {
     }
 
     private void runListBansCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
+        if (args.length > 1) {
+            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 number after listbans.");
+        }
+        int pageNumber;
+        if (args.length == 0) {
+            pageNumber = 0;
+        } else {
+            try {
+                pageNumber = Integer.valueOf(args[0]);
+            } catch (Exception e) {
+                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
+                sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+                return;
+            }
+        }
+        Data[] rawDatalist = pDataH.getAllDatas("bandata");
     }
 }

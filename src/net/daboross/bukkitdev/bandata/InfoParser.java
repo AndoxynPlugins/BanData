@@ -5,8 +5,8 @@ import java.util.Arrays;
 import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.DataDisplayParser;
-import net.daboross.bukkitdev.playerdata.PlayerData;
 import net.daboross.bukkitdev.playerdata.PData;
+import net.daboross.bukkitdev.playerdata.PlayerData;
 
 /**
  *
@@ -32,7 +32,7 @@ public class InfoParser implements DataDisplayParser {
         if (!rawData.getName().equalsIgnoreCase("bandata")) {
             return new String[]{ColorList.ILLEGALARGUMENT + "Illegal Data"};
         }
-        BData banData = DataParser.parseFromlist(rawData.getData());
+        BData banData = DataParser.parseFromlist(rawData);
         PData owner = rawData.getOwner();
         String userName;
         if (owner != null) {
@@ -59,7 +59,7 @@ public class InfoParser implements DataDisplayParser {
         if (!rawData.getName().equalsIgnoreCase("bandata")) {
             return new String[]{ColorList.ILLEGALARGUMENT + "Illegal Data"};
         }
-        BData banData = DataParser.parseFromlist(rawData.getData());
+        BData banData = DataParser.parseFromlist(rawData);
         PData owner = rawData.getOwner();
         String userName;
         if (owner != null) {
