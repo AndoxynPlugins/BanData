@@ -99,6 +99,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 runBanCommand(sender, cmd, args[0], getSubArray(args));
             } else if (commandName.equalsIgnoreCase("viewban")) {
                 runViewBanCommand(sender, cmd, args[0], getSubArray(args));
+            } else if (commandName.equalsIgnoreCase("bantp")) {
+                runBanTpCommand(sender, cmd, getSubArray(args));
             }
             return true;
         }
@@ -233,5 +235,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
         }
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
+    }
+
+    private void runBanTpCommand(CommandSender sender, Command cmd, String[] args) {
     }
 }
