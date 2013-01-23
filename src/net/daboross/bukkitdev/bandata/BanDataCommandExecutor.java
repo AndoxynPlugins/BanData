@@ -137,7 +137,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
 
     private String getMultipleAliasHelpMessage(String subcmd, String baseCommand) {
         String[] aliasList = helpAliasMap.get(subcmd);
-        String commandList = "";
+        String commandList = subcmd;
         for (String str : aliasList) {
             commandList += ColorList.DIVIDER + "/" + ColorList.SUBCMD + str;
         }
