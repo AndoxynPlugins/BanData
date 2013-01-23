@@ -7,6 +7,8 @@ import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.DataDisplayParser;
 import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerData;
+import ru.tehkode.permissions.PermissionUser;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 /**
  *
@@ -101,11 +103,16 @@ public class InfoParser implements DataDisplayParser {
         } else {
             userName = "";
         }
-        String[] infoLines = new String[]{
-            ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber
-            + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":",
-            ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.",
-            ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason()};
+        String[] infoLines = new String[4];
+        infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
+        infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
+        infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
+        PermissionUser user = PermissionsEx.getUser(userName);
+        if (user.inGroup("Banned")) {
+            infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Currently Banned";
+        } else {
+            infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
+        }
         return infoLines;
     }
 
