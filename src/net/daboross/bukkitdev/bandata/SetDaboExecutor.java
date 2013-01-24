@@ -11,10 +11,10 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
  * @author daboross
  */
 class SetDaboExecutor implements CommandExecutor {
-    
+
     public SetDaboExecutor() {
     }
-    
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("setdabo")) {
