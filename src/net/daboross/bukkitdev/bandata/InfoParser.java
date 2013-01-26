@@ -67,7 +67,7 @@ public class InfoParser implements DataDisplayParser {
         } else {
             userName = "";
         }
-        ArrayList<String> returnList = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<String>();
         returnList.add(ColorList.MAIN + "Ban Data Info from last ban of" + ColorList.NAME + userName);
         returnList.addAll(Arrays.asList(banInfo(rawData, banData, -1)));
         return returnList.toArray(new String[0]);

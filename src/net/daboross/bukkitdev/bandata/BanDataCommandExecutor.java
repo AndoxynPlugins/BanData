@@ -24,11 +24,11 @@ import ru.tehkode.permissions.PermissionUser;
  */
 public class BanDataCommandExecutor implements CommandExecutor {
 
-    private final Map<String, String> aliasMap = new HashMap<>();
-    private final Map<String, Boolean> isConsoleMap = new HashMap<>();
-    private final Map<String, String> helpList = new HashMap<>();
-    private final Map<String, String[]> helpAliasMap = new HashMap<>();
-    private final Map<String, String> permMap = new HashMap<>();
+    private final Map<String, String> aliasMap = new HashMap<String, String>();
+    private final Map<String, Boolean> isConsoleMap = new HashMap<String, Boolean>();
+    private final Map<String, String> helpList = new HashMap<String, String>();
+    private final Map<String, String[]> helpAliasMap = new HashMap<String, String[]>();
+    private final Map<String, String> permMap = new HashMap<String, String>();
     private PlayerData playerDataMain;
     private PlayerDataHandler pDataH;
     private BanData banDataMain;
@@ -317,7 +317,7 @@ public class BanDataCommandExecutor implements CommandExecutor {
             }
         }
         BData[] banDataList = DataParser.parseAll(pDataH.getAllDatas("bandata"));
-        ArrayList<String> messagesToSend = new ArrayList<>();
+        ArrayList<String> messagesToSend = new ArrayList<String>();
         messagesToSend.add("");
         messagesToSend.add(ColorList.MAIN_DARK + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN_DARK + ":");
         for (int i = ((pageNumber - 1) * 6); i < ((pageNumber - 1) * 6) + 6 & i < banDataList.length; i++) {

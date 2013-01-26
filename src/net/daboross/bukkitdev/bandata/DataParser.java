@@ -11,7 +11,7 @@ import net.daboross.bukkitdev.playerdata.Data;
 public class DataParser {
 
     protected static String[] parseToList(BData bd) {
-        ArrayList<String> returnList = new ArrayList<>();
+        ArrayList<String> returnList = new ArrayList<String>();
         for (Ban b : bd.getBans()) {
             if (b.isConsoleBan()) {
                 returnList.add("CBAN:");
@@ -40,8 +40,8 @@ public class DataParser {
         }
         String[] strl = data.getData();
         String current = "finding";
-        ArrayList<String> currentBan = new ArrayList<>();
-        ArrayList<Ban> banList = new ArrayList<>();
+        ArrayList<String> currentBan = new ArrayList<String>();
+        ArrayList<Ban> banList = new ArrayList<Ban>();
         for (int i = 0; i < strl.length; i++) {
             String currentString = strl[i];
             char[] currentCharList = currentString.toCharArray();
