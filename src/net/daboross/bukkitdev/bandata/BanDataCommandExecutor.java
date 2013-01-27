@@ -45,6 +45,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
         initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
         initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
         initCommand("listbans", new String[]{"list", "bl", "lb"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
+        initCommand("checkBans", new String[]{}, true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase");
+        //initCommand("redo", new String[]{}, true, "bandata.admin", ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + "This Command Adds a Reason to an Unknown Reason Ban.");
     }
 
     private void initCommand(String cmd, String[] aliases, boolean isConsole, String permission, String helpString) {
@@ -102,6 +104,8 @@ public class BanDataCommandExecutor implements CommandExecutor {
                 runBanTpCommand(sender, cmd, args[0], getSubArray(args));
             } else if (commandName.equalsIgnoreCase("listbans")) {
                 runListBansCommand(sender, cmd, args[0], getSubArray(args));
+            } else if (commandName.equalsIgnoreCase("checkbans")) {
+                runBanCheckCommand(sender, cmd, getSubArray(args));
             }
             return true;
         }
@@ -334,5 +338,9 @@ public class BanDataCommandExecutor implements CommandExecutor {
             messagesToSend.add(ColorList.MAIN_DARK + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[0]));
+    }
+
+    private void runBanCheckCommand(CommandSender sender, Command cmd, String[] args) {
+        banDataMain.getBanCheckReloader().goThrough();
     }
 }
