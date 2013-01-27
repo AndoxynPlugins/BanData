@@ -16,6 +16,7 @@ public class BanData extends JavaPlugin {
     private PlayerData playerData;
     private BanDataCommandExecutor bdce;
     private static BanData currentInstance;
+    private BanCheckReloader banCheckReloader;
 
     @Override
     public void onEnable() {
@@ -35,19 +36,16 @@ public class BanData extends JavaPlugin {
         }
         bdce = new BanDataCommandExecutor(this);
         PluginCommand bd = getCommand("bd");
-        if (bd != null) {
-            bd.setExecutor(bdce);
-        } else {
+        if (bd == null) {
             getLogger().log(Level.SEVERE, "Ban Data Command Not Found!");
-        }
-        PluginCommand setdabo = getCommand("setdabo");
-        if (setdabo != null) {
-            setdabo.setExecutor(new SetDaboExecutor());
         } else {
-            getLogger().log(Level.SEVERE, "Set Dabo Command Not Found!");
+            bd.setExecutor(bdce);
         }
         playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
+        banCheckReloader = new BanCheckReloader(this);
+        banCheckReloader.goThrough();
         currentInstance = this;
+        getLogger().log(Level.INFO, "BanData Enabled");
     }
 
     @Override
@@ -57,6 +55,10 @@ public class BanData extends JavaPlugin {
 
     protected PlayerData getPlayerData() {
         return playerData;
+    }
+
+    protected BanCheckReloader getBanCheckReloader() {
+        return banCheckReloader;
     }
 
     protected static BanData getCurrentInstance() {
