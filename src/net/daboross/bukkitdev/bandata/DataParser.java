@@ -16,13 +16,13 @@ public class DataParser {
             if (b.isConsoleBan()) {
                 returnList.add("CBAN:");
                 returnList.add(b.getReason());
-                returnList.add(b.getOldGroup());
+                returnList.add(groupToString(b.getOldGroups()));
                 returnList.add(String.valueOf(b.getTimeStamp()));
                 returnList.add(";;;");
             } else {
                 returnList.add("BAN:");
                 returnList.add(b.getReason());
-                returnList.add(b.getOldGroup());
+                returnList.add(groupToString(b.getOldGroups()));
                 returnList.add(String.valueOf(b.getTimeStamp()));
                 returnList.add(String.valueOf(b.getXPos()));
                 returnList.add(String.valueOf(b.getYPos()));
@@ -32,6 +32,36 @@ public class DataParser {
             }
         }
         return returnList.toArray(new String[0]);
+    }
+
+    private static String groupToString(String[] groups) {
+        String returnV = "";
+        for (String str : groups) {
+            returnV += "," + str;
+        }
+        return returnV;
+    }
+
+    private static String[] stringToGroup(String groups) {
+        char[] gC = groups.toCharArray();
+        ArrayList<String> groupsFound = new ArrayList<String>();
+        String currentGroup = "";
+        for (int i = 0; i < gC.length; i++) {
+            char current = gC[i];
+            if (current == ',') {
+                if (currentGroup.length() == 0) {
+                    continue;
+                }
+                groupsFound.add(currentGroup);
+                currentGroup = "";
+                continue;
+            }
+            currentGroup += current;
+        }
+        if (!(currentGroup.length() == 0)) {
+            groupsFound.add(currentGroup);
+        }
+        return groupsFound.toArray(new String[0]);
     }
 
     protected static BData parseFromlist(Data data) {
@@ -60,16 +90,16 @@ public class DataParser {
                         try {
                             Ban b;
                             String reason = currentBan.get(0);
-                            String oldGroup = currentBan.get(1);
+                            String[] oldGroups = stringToGroup(currentBan.get(1));
                             long timeStamp = Long.valueOf(currentBan.get(2));
                             if (reason.equalsIgnoreCase("Unknown Reason")) {
-                                b = new Ban(reason, oldGroup, timeStamp);
+                                b = new Ban(reason, oldGroups, timeStamp);
                             } else {
                                 long xPos = Long.valueOf(currentBan.get(3));
                                 long yPos = Long.valueOf(currentBan.get(4));
                                 long zPos = Long.valueOf(currentBan.get(5));
                                 String world = currentBan.get(6);
-                                b = new Ban(reason, oldGroup, xPos, yPos, zPos, world, timeStamp);
+                                b = new Ban(reason, oldGroups, xPos, yPos, zPos, world, timeStamp);
                             }
                             banList.add(b);
                         } catch (Exception e) {
@@ -82,9 +112,9 @@ public class DataParser {
                     if (currentBan.size() == 3) {
                         try {
                             String reason = currentBan.get(0);
-                            String oldGroup = currentBan.get(1);
+                            String[] oldGroups = stringToGroup(currentBan.get(1));
                             long timeStamp = Long.valueOf(currentBan.get(2));
-                            Ban b = new Ban(reason, oldGroup, timeStamp);
+                            Ban b = new Ban(reason, oldGroups, timeStamp);
                             banList.add(b);
                         } catch (Exception e) {
                             BanData.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");

@@ -13,9 +13,9 @@ public class Ban {
     private long timeStamp;
     private boolean isConsoleBan;
     private String world;
-    private String oldGroup;
+    private String[] oldGroups;
 
-    protected Ban(String reason, String oldGroup, long xPos, long yPos, long zPos, String world, long timeStamp) {
+    protected Ban(String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
         this.reason = reason;
         this.xPos = xPos;
         this.yPos = yPos;
@@ -23,14 +23,14 @@ public class Ban {
         this.world = world;
         this.timeStamp = timeStamp;
         this.isConsoleBan = false;
-        this.oldGroup = oldGroup;
+        this.oldGroups = oldGroups;
     }
 
-    protected Ban(String reason, String oldGroup, long timeStamp) {
+    protected Ban(String reason, String oldGroups[], long timeStamp) {
         this.reason = reason;
         this.isConsoleBan = true;
         this.timeStamp = timeStamp;
-        this.oldGroup = oldGroup;
+        this.oldGroups = oldGroups;
     }
 
     protected String getReason() {
@@ -61,7 +61,7 @@ public class Ban {
         return world;
     }
 
-    protected String getOldGroup() {
-        return oldGroup;
+    protected String[] getOldGroups() {
+        return oldGroups;
     }
 }

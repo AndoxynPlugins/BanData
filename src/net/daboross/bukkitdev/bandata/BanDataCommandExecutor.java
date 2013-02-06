@@ -88,18 +88,25 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
             }
             sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
             PermissionUser permPlayer = playerToBanPData.getPermUser();
-            String oldGroup = playerToBanPData.getGroup();
-            if (oldGroup == null) {
-                oldGroup = "Basic";
+            String[] oldGroups = playerToBanPData.getGroups();
+            if (oldGroups == null) {
+                oldGroups = new String[]{"Basic"};
+            }
+            if (oldGroups.length < 2) {
+                if (oldGroups.length == 0) {
+                    oldGroups = new String[]{"Basic"};
+                } else if (oldGroups[0].equals("Unknown")) {
+                    oldGroups = new String[]{"Basic"};
+                }
             }
             permPlayer.setGroups(new String[]{"Banned"});
             Ban ban;
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 Location loc = player.getLocation();
-                ban = new Ban(reason, oldGroup, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
+                ban = new Ban(reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
             } else {
-                ban = new Ban(reason, oldGroup, System.currentTimeMillis());
+                ban = new Ban(reason, oldGroups, System.currentTimeMillis());
 
             }
             Data rawData = pDataH.getCustomData(playerToBanUserName, "bandata");
@@ -250,12 +257,16 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
             BData currentBanData = banDataList[i];
             messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
                     + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? "ban recorded" : "bans recorded")
-                    + ", and " + (currentBanData.getOwner().getGroup().equalsIgnoreCase("Banned") ? "is currently banned" : "is not currently banned") + ".");
+                    + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }
         if (pageNumber < (banDataList.length / 6.0)) {
             messagesToSend.add(ColorList.MAIN_DARK + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[0]));
+    }
+
+    private boolean isBanned(BData bd) {
+        return bd.getOwner().isGroup("banned");
     }
 
     private void runBanCheckCommand(CommandSender sender, Command cmd, String[] args) {

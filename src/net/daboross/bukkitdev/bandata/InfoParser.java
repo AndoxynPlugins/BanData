@@ -99,18 +99,18 @@ public class InfoParser implements DataDisplayParser {
         if (owner != null) {
             userName = " " + owner.userName();
         } else {
-            userName = "";
+            return new String[]{};
         }
         String[] infoLines = new String[5];
         infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
         infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
         infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
-        if (owner.getGroup().equalsIgnoreCase("Banned")) {
+        if (owner.isGroup("banned")) {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Currently Banned";
         } else {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
         }
-        infoLines[4] = ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + banToView.getOldGroup() + ColorList.MAIN + " before they were banned.";
+        infoLines[4] = ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + banToView.getOldGroups() + ColorList.MAIN + " before they were banned.";
         return infoLines;
     }
 
