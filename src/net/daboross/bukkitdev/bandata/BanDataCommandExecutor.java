@@ -19,7 +19,7 @@ import ru.tehkode.permissions.PermissionUser;
  * @author daboross
  */
 public class BanDataCommandExecutor extends CommandExecutorBase {
-
+    
     private PlayerData playerDataMain;
     private PlayerDataHandler pDataH;
     private BanData banDataMain;
@@ -39,7 +39,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         initCommand("checkBans", new String[]{}, true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase");
         //initCommand("redo", new String[]{}, true, "bandata.admin", ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + "This Command Adds a Reason to an Unknown Reason Ban.");
     }
-
+    
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("bd")) {
@@ -62,59 +62,64 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         }
         return false;
     }
-
+    
     private void runBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 2) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name and a Ban Reason!");
             sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
             return;
         }
-        if (!pDataH.doesPlayerExists(args[0])) {
-            sender.sendMessage(ColorList.MAIN + "No Player whoes full name matches " + ColorList.NAME + args[0] + ColorList.MAIN + " was found.");
-            sender.sendMessage(ColorList.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
-            String fullUserName = pDataH.getFullUsername(args[0]);
-            if (fullUserName != null) {
-                sender.sendMessage(ColorList.MAIN + "Did you mean " + ColorList.NAME + fullUserName + ColorList.MAIN + "?");
+        if (PlayerData.isPEX()) {
+            if (!pDataH.doesPlayerExists(args[0])) {
+                sender.sendMessage(ColorList.MAIN + "No Player whoes full name matches " + ColorList.NAME + args[0] + ColorList.MAIN + " was found.");
+                sender.sendMessage(ColorList.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
+                String fullUserName = pDataH.getFullUsername(args[0]);
+                if (fullUserName != null) {
+                    sender.sendMessage(ColorList.MAIN + "Did you mean " + ColorList.NAME + fullUserName + ColorList.MAIN + "?");
+                }
+                return;
             }
-            return;
-        }
-        String playerToBanUserName = pDataH.getFullUsername(args[0]);
-        PData playerToBanPData = pDataH.getPData(playerToBanUserName);
-        String reason = "";
-        for (int i = 1; i < args.length; i++) {
-            reason += " " + args[i];
-        }
-        sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
-        PermissionUser permPlayer = playerToBanPData.getPermUser();
-        String oldGroup = playerToBanPData.getGroup();
-        if (oldGroup == null) {
-            oldGroup = "Basic";
-        }
-        permPlayer.setGroups(new String[]{"Banned"});
-        Ban ban;
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Location loc = player.getLocation();
-            ban = new Ban(reason, oldGroup, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
+            
+            String playerToBanUserName = pDataH.getFullUsername(args[0]);
+            PData playerToBanPData = pDataH.getPData(playerToBanUserName);
+            String reason = "";
+            for (int i = 1; i < args.length; i++) {
+                reason += " " + args[i];
+            }
+            sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
+            PermissionUser permPlayer = playerToBanPData.getPermUser();
+            String oldGroup = playerToBanPData.getGroup();
+            if (oldGroup == null) {
+                oldGroup = "Basic";
+            }
+            permPlayer.setGroups(new String[]{"Banned"});
+            Ban ban;
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                Location loc = player.getLocation();
+                ban = new Ban(reason, oldGroup, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
+            } else {
+                ban = new Ban(reason, oldGroup, System.currentTimeMillis());
+                
+            }
+            Data rawData = pDataH.getCustomData(playerToBanUserName, "bandata");
+            BData banData;
+            if (rawData == null) {
+                Ban[] banList = new Ban[]{ban};
+                banData = new BData(banList, pDataH.getPData(playerToBanUserName));
+            } else {
+                banData = DataParser.parseFromlist(rawData);
+                banData.addBan(ban);
+            }
+            String[] newRawBanData = DataParser.parseToList(banData);
+            Data banDataToSet = new Data("bandata", newRawBanData);
+            pDataH.addCustomData(playerToBanUserName, banDataToSet);
+            Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
         } else {
-            ban = new Ban(reason, oldGroup, System.currentTimeMillis());
-
+            sender.sendMessage(ColorList.ERROR_ARGS + "PermissionsEx" + ColorList.ERROR + " is not loaded");
         }
-        Data rawData = pDataH.getCustomData(playerToBanUserName, "bandata");
-        BData banData;
-        if (rawData == null) {
-            Ban[] banList = new Ban[]{ban};
-            banData = new BData(banList, pDataH.getPData(playerToBanUserName));
-        } else {
-            banData = DataParser.parseFromlist(rawData);
-            banData.addBan(ban);
-        }
-        String[] newRawBanData = DataParser.parseToList(banData);
-        Data banDataToSet = new Data("bandata", newRawBanData);
-        pDataH.addCustomData(playerToBanUserName, banDataToSet);
-        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
     }
-
+    
     private void runViewBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
@@ -158,7 +163,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         }
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
-
+    
     private void runBanTpCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
@@ -216,7 +221,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         player.teleport(loc);
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
-
+    
     private void runListBansCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
         if (args.length > 1) {
             sender.sendMessage(ColorList.MAIN + "Please Use Only 1 Number After " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel);
@@ -256,7 +261,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         }
         sender.sendMessage(messagesToSend.toArray(new String[0]));
     }
-
+    
     private void runBanCheckCommand(CommandSender sender, Command cmd, String[] args) {
         banDataMain.getBanCheckReloader().goThrough();
     }
