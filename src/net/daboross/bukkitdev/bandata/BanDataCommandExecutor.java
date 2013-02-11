@@ -256,7 +256,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         for (int i = ((pageNumber - 1) * 6); i < ((pageNumber - 1) * 6) + 6 & i < banDataList.length; i++) {
             BData currentBanData = banDataList[i];
             messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
-                    + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? " ban recorded" : "bans recorded")
+                    + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? " ban recorded" : " bans recorded")
                     + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }
         if (pageNumber < (banDataList.length / 6.0)) {
