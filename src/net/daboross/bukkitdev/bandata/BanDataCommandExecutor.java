@@ -267,6 +267,6 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
 
     @Override
     public String getCommandName() {
-        throw new UnsupportedOperationException("net.daboross.bukkitdev.bandata.BanDataCommandExecutor: The Method getCommandName had not been implemented.");
+        return "bd";
     }
 }
