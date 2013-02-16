@@ -41,26 +41,18 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("bd")) {
-            String commandName = isCommandValid(sender, cmd, label, args);
-            if (commandName == null) {
-                return true;
-            }
-            if (commandName.equalsIgnoreCase("ban")) {
-                runBanCommand(sender, cmd, args[0], getSubArray(args));
-            } else if (commandName.equalsIgnoreCase("viewban")) {
-                runViewBanCommand(sender, cmd, args[0], getSubArray(args));
-            } else if (commandName.equalsIgnoreCase("bantp")) {
-                runBanTpCommand(sender, cmd, args[0], getSubArray(args));
-            } else if (commandName.equalsIgnoreCase("listbans")) {
-                runListBansCommand(sender, cmd, args[0], getSubArray(args));
-            } else if (commandName.equalsIgnoreCase("checkbans")) {
-                runBanCheckCommand(sender, cmd, getSubArray(args));
-            }
-            return true;
+    public void runCommand(CommandSender sender, Command mainCommand, String mainCommandLabel, String subCommand, String subCommandLabel, String[] subCommandArgs) {
+        if (subCommand.equalsIgnoreCase("ban")) {
+            runBanCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
+        } else if (subCommand.equalsIgnoreCase("viewban")) {
+            runViewBanCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
+        } else if (subCommand.equalsIgnoreCase("bantp")) {
+            runBanTpCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
+        } else if (subCommand.equalsIgnoreCase("listbans")) {
+            runListBansCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
+        } else if (subCommand.equalsIgnoreCase("checkbans")) {
+            runBanCheckCommand(sender, mainCommand, subCommandArgs);
         }
-        return false;
     }
 
     private void runBanCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
@@ -271,5 +263,10 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
 
     private void runBanCheckCommand(CommandSender sender, Command cmd, String[] args) {
         banDataMain.getBanCheckReloader().goThrough();
+    }
+
+    @Override
+    public String getCommandName() {
+        throw new UnsupportedOperationException("net.daboross.bukkitdev.bandata.BanDataCommandExecutor: The Method getCommandName had not been implemented.");
     }
 }
