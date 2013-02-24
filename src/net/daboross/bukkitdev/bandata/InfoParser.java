@@ -101,7 +101,7 @@ public class InfoParser implements DataDisplayParser {
         } else {
             return new String[0];
         }
-        boolean isBannerAvalible = !banToView.getBanner().equals("Unknown");
+        boolean isBannerAvalible = !"Unknown".equalsIgnoreCase(banToView.getBanner());
         String[] infoLines = isBannerAvalible ? new String[6] : new String[5];
         infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
         infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
