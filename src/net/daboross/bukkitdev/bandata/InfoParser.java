@@ -99,9 +99,10 @@ public class InfoParser implements DataDisplayParser {
         if (owner != null) {
             userName = " " + owner.userName();
         } else {
-            return new String[]{};
+            return new String[0];
         }
-        String[] infoLines = new String[5];
+        boolean isBannerAvalible = !banToView.getBanner().equals("Unknown");
+        String[] infoLines = isBannerAvalible ? new String[6] : new String[5];
         infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
         infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
         infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
@@ -111,6 +112,9 @@ public class InfoParser implements DataDisplayParser {
             infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
         }
         infoLines[4] = ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + PlayerData.formatList(banToView.getOldGroups()) + ColorList.MAIN + " before they were banned.";
+        if (isBannerAvalible) {
+            infoLines[5] = ColorList.NAME + userName + ColorList.MAIN + " was banned by " + ColorList.NAME + banToView.getBanner();
+        }
         return infoLines;
     }
 

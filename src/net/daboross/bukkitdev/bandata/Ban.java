@@ -14,8 +14,9 @@ public class Ban {
     private boolean isConsoleBan;
     private String world;
     private String[] oldGroups;
+    private String banner;
 
-    protected Ban(String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
+    protected Ban(String banner, String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
         this.reason = reason;
         this.xPos = xPos;
         this.yPos = yPos;
@@ -24,6 +25,7 @@ public class Ban {
         this.timeStamp = timeStamp;
         this.isConsoleBan = false;
         this.oldGroups = oldGroups;
+        this.banner = banner;
     }
 
     protected Ban(String reason, String oldGroups[], long timeStamp) {
@@ -31,6 +33,7 @@ public class Ban {
         this.isConsoleBan = true;
         this.timeStamp = timeStamp;
         this.oldGroups = oldGroups;
+        this.banner = "Console";
     }
 
     protected String getReason() {
@@ -63,5 +66,9 @@ public class Ban {
 
     protected String[] getOldGroups() {
         return oldGroups;
+    }
+
+    protected String getBanner() {
+        return banner;
     }
 }

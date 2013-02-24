@@ -96,7 +96,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 Location loc = player.getLocation();
-                ban = new Ban(reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
+                ban = new Ban(player.getName(), reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
             } else {
                 ban = new Ban(reason, oldGroups, System.currentTimeMillis());
 
