@@ -1,6 +1,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.Data;
 
@@ -10,8 +11,8 @@ import net.daboross.bukkitdev.playerdata.Data;
  */
 public class DataParser {
 
-    protected static String[] parseToList(BData bd) {
-        ArrayList<String> returnList = new ArrayList<String>();
+    protected static String[] parseToList(final BData bd) {
+        List<String> returnList = new ArrayList<String>();
         for (Ban b : bd.getBans()) {
             if (b.isConsoleBan()) {
                 returnList.add("CBAN:");
@@ -35,7 +36,7 @@ public class DataParser {
         return returnList.toArray(new String[0]);
     }
 
-    private static String groupToString(String[] groups) {
+    private static String groupToString(final String[] groups) {
         String returnV = "";
         for (String str : groups) {
             returnV += "," + str;
@@ -43,7 +44,7 @@ public class DataParser {
         return returnV;
     }
 
-    private static String[] stringToGroup(String groups) {
+    private static String[] stringToGroup(final String groups) {
         char[] gC = groups.toCharArray();
         ArrayList<String> groupsFound = new ArrayList<String>();
         String currentGroup = "";
@@ -65,7 +66,7 @@ public class DataParser {
         return groupsFound.toArray(new String[0]);
     }
 
-    protected static BData parseFromlist(Data data) {
+    protected static BData parseFromlist(final Data data) {
         if (data == null) {
             throw new IllegalArgumentException("Data Can't Be Null");
         }
@@ -150,7 +151,7 @@ public class DataParser {
         return bData;
     }
 
-    protected static BData[] parseAll(Data[] data) {
+    protected static BData[] parseAll(final Data[] data) {
         BData[] returnList = new BData[data.length];
         for (int i = 0; i < data.length; i++) {
             returnList[i] = parseFromlist(data[i]);
