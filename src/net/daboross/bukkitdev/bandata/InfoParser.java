@@ -2,6 +2,7 @@ package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.DataDisplayParser;
@@ -97,25 +98,28 @@ public class InfoParser implements DataDisplayParser {
         PData owner = rawData.getOwner();
         String userName;
         if (owner != null) {
-            userName = " " + owner.userName();
+            userName = owner.userName();
         } else {
             return new String[0];
         }
         boolean isBannerAvalible = !"Unknown".equalsIgnoreCase(banToView.getBanner());
-        String[] infoLines = isBannerAvalible ? new String[6] : new String[5];
-        infoLines[0] = ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":";
-        infoLines[1] = ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.";
-        infoLines[2] = ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason();
+        List<String> infoList = new ArrayList<String>(7);
+        infoList.add(ColorList.MAIN + "Ban Data For Ban Number " + ColorList.NUMBER + banNumber + ColorList.MAIN + " of player " + ColorList.NAME + userName + ColorList.MAIN + ":");
+        infoList.add(ColorList.MAIN + "Ban Occurred " + ColorList.NUMBER + PlayerData.getFormattedDDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.MAIN + " ago.");
+        infoList.add(ColorList.MAIN + "Ban Reason: " + ColorList.NUMBER + banToView.getReason());
         if (owner.isGroup("Banned")) {
-            infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Currently Banned";
+            infoList.add(ColorList.NAME + userName + ColorList.MAIN + " Is Currently Banned");
         } else {
-            infoLines[3] = ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned";
+            infoList.add(ColorList.NAME + userName + ColorList.MAIN + " Is Not Currently Banned");
         }
-        infoLines[4] = ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + PlayerData.formatList(banToView.getOldGroups()) + ColorList.MAIN + " before they were banned.";
+        infoList.add(ColorList.NAME + userName + ColorList.MAIN + " was " + ColorList.NUMBER + PlayerData.formatList(banToView.getOldGroups()) + ColorList.MAIN + " before they were banned.");
         if (isBannerAvalible) {
-            infoLines[5] = ColorList.NAME + userName + ColorList.MAIN + " was banned by " + ColorList.NAME + banToView.getBanner();
+            infoList.add(ColorList.NAME + userName + ColorList.MAIN + " was banned by " + ColorList.NAME + banToView.getBanner());
         }
-        return infoLines;
+        if (!banToView.isConsoleBan()) {
+            infoList.add(ColorList.MAIN + "To See Where " + ColorList.NAME + userName + ColorList.MAIN + " was banned, type " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "bantp " + ColorList.NAME + userName + " " + ColorList.ARGS + banNumber);
+        }
+        return infoList.toArray(new String[infoList.size()]);
     }
 
     public static InfoParser getInstance() {
