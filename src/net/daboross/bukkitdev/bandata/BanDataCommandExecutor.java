@@ -1,6 +1,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
+import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.playerdata.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PData;
@@ -74,10 +75,11 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
 
             String playerToBanUserName = pDataH.getFullUsername(args[0]);
             PData playerToBanPData = pDataH.getPData(playerToBanUserName);
-            String reason = "";
+            StringBuilder reasonBuilder = new StringBuilder(args[1]);
             for (int i = 1; i < args.length; i++) {
-                reason += " " + args[i];
+                reasonBuilder.append(" ").append(args[i]);
             }
+            String reason = reasonBuilder.toString();
             sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
             PermissionUser permPlayer = playerToBanPData.getPermUser();
             String[] oldGroups = playerToBanPData.getGroups();
@@ -245,7 +247,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         ArrayList<String> messagesToSend = new ArrayList<String>();
         messagesToSend.add("");
         messagesToSend.add(ColorList.MAIN_DARK + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN_DARK + ":");
-        for (int i = ((pageNumber - 1) * 6); i < ((pageNumber - 1) * 6) + 6 & i < banDataList.length; i++) {
+        for (int i = ((pageNumber - 1) * 6); i < banDataList.length && i < ((pageNumber - 1) * 6) + 6; i++) {
             BData currentBanData = banDataList[i];
             messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
                     + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? " ban recorded" : " bans recorded")
@@ -254,7 +256,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
         if (pageNumber < (banDataList.length / 6.0)) {
             messagesToSend.add(ColorList.MAIN_DARK + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
-        sender.sendMessage(messagesToSend.toArray(new String[0]));
+        sender.sendMessage(messagesToSend.toArray(new String[messagesToSend.size()]));
     }
 
     private boolean isBanned(BData bd) {

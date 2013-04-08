@@ -16,6 +16,7 @@ import net.daboross.bukkitdev.playerdata.PlayerData;
 public class InfoParser implements DataDisplayParser {
 
     private static InfoParser instance;
+    private static final Object INSTANCE_LOCK = new Object();
 
     private InfoParser() {
     }
@@ -71,7 +72,7 @@ public class InfoParser implements DataDisplayParser {
         ArrayList<String> returnList = new ArrayList<String>();
         returnList.add(ColorList.MAIN + "Ban Data Info from last ban of" + ColorList.NAME + userName);
         returnList.addAll(Arrays.asList(banInfo(rawData, banData, -1)));
-        return returnList.toArray(new String[0]);
+        return returnList.toArray(new String[returnList.size()]);
     }
 
     /**
@@ -123,8 +124,10 @@ public class InfoParser implements DataDisplayParser {
     }
 
     public static InfoParser getInstance() {
-        if (instance == null) {
-            instance = new InfoParser();
+        synchronized (INSTANCE_LOCK) {
+            if (instance == null) {
+                instance = new InfoParser();
+            }
         }
         return instance;
     }
