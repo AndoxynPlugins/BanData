@@ -19,30 +19,27 @@ import ru.tehkode.permissions.PermissionUser;
  *
  * @author daboross
  */
-public class BanDataCommandExecutor extends CommandExecutorBase {
+public class BanDataCommandExecutor extends CommandExecutorBase implements CommandExecutorBase.CommandReactor {
 
     private PlayerData playerDataMain;
     private PlayerDataHandler pDataH;
     private BanData banDataMain;
 
-    /**
-     *
-     */
     protected BanDataCommandExecutor(BanData bd) {
         this.banDataMain = bd;
         this.playerDataMain = banDataMain.getPlayerData();
         this.pDataH = playerDataMain.getHandler();
-        initCommand("help", new String[]{"?"}, true, "bandata.help", "This Command Views This Page");
-        initCommand("ban", true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."));
-        initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"));
-        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.");
-        initCommand("listbans", new String[]{"list", "bl", "lb"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned");
-        initCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase");
+        initCommand("ban", true, "bandata.ban", (ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + " Bans A Player With PEX and Records Info."), this);
+        initCommand("viewban", new String[]{"vb", "i"}, true, "bandata.viewban", (ColorList.ARGS + "<Player>" + ColorList.HELP + " Views Ban Info On a Player"), this);
+        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", ColorList.ARGS + "<Player>" + ColorList.HELP + " This Command Teleports You To Where Someone Was Banned.", this);
+        initCommand("listbans", new String[]{"list", "bl", "lb"}, true, "bandata.listbans", "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned", this);
+        initCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase", this);
         //initCommand("redo", new String[]{}, true, "bandata.admin", ColorList.ARGS + "<Player> <Reason>" + ColorList.HELP + "This Command Adds a Reason to an Unknown Reason Ban.");
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command mainCommand, String mainCommandLabel, String subCommand, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand(CommandSender sender, Command mainCommand, String mainCommandLabel, String subCommand, String subCommandLabel,
+            String[] subCommandArgs, CommandExecutorBridge executorBridge) {
         if (subCommand.equalsIgnoreCase("ban")) {
             runBanCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
         } else if (subCommand.equalsIgnoreCase("viewban")) {
@@ -270,5 +267,10 @@ public class BanDataCommandExecutor extends CommandExecutorBase {
     @Override
     public String getCommandName() {
         return "bd";
+    }
+
+    @Override
+    protected String getMainCmdPermission() {
+        return "bandata.help";
     }
 }
