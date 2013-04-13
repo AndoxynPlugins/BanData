@@ -12,7 +12,7 @@ import net.daboross.bukkitdev.playerdata.Data;
  */
 public class DataParser {
 
-    protected static String[] parseToList(final BData bd) {
+    public static String[] parseToList(final BData bd) {
         List<String> returnList = new ArrayList<String>();
         for (Ban b : bd.getBans()) {
             if (b.isConsoleBan()) {
@@ -67,7 +67,7 @@ public class DataParser {
         return groupsFound.toArray(new String[groupsFound.size()]);
     }
 
-    protected static BData parseFromlist(final Data data) {
+    public static BData parseFromlist(final Data data) {
         if (data == null) {
             throw new IllegalArgumentException("Data Can't Be Null");
         }

@@ -82,7 +82,7 @@ public class InfoParser implements DataDisplayParser {
      * @param banNumber
      * @return
      */
-    protected String[] banInfo(Data rawData, BData data, int banNumber) {
+    public String[] banInfo(Data rawData, BData data, int banNumber) {
         if (rawData == null || data == null) {
             throw new IllegalArgumentException("Can't Be Null!");
         }

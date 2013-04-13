@@ -6,17 +6,17 @@ package net.daboross.bukkitdev.bandata;
  */
 public class Ban {
 
-    private String reason;
-    private long xPos;
-    private long yPos;
-    private long zPos;
-    private long timeStamp;
-    private boolean isConsoleBan;
-    private String world;
-    private String[] oldGroups;
-    private String banner;
+    private final String reason;
+    private final long xPos;
+    private final long yPos;
+    private final long zPos;
+    private final long timeStamp;
+    private final boolean isConsoleBan;
+    private final String world;
+    private final String[] oldGroups;
+    private final String banner;
 
-    protected Ban(String banner, String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
+    public Ban(String banner, String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
         this.reason = reason;
         this.xPos = xPos;
         this.yPos = yPos;
@@ -28,47 +28,51 @@ public class Ban {
         this.banner = banner;
     }
 
-    protected Ban(String reason, String oldGroups[], long timeStamp) {
+    public Ban(String reason, String oldGroups[], long timeStamp) {
         this.reason = reason;
+        this.xPos = 0;
+        this.yPos = 0;
+        this.zPos = 0;
+        this.world = "";
         this.isConsoleBan = true;
         this.timeStamp = timeStamp;
         this.oldGroups = oldGroups;
         this.banner = "Console";
     }
 
-    protected String getReason() {
+    public String getReason() {
         return reason;
     }
 
-    protected long getXPos() {
+    public long getXPos() {
         return xPos;
     }
 
-    protected long getYPos() {
+    public long getYPos() {
         return yPos;
     }
 
-    protected long getZPos() {
+    public long getZPos() {
         return zPos;
     }
 
-    protected long getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 
-    protected boolean isConsoleBan() {
+    public boolean isConsoleBan() {
         return isConsoleBan;
     }
 
-    protected String getWorld() {
+    public String getWorld() {
         return world;
     }
 
-    protected String[] getOldGroups() {
+    public String[] getOldGroups() {
         return oldGroups;
     }
 
-    protected String getBanner() {
+    public String getBanner() {
         return banner;
     }
 }

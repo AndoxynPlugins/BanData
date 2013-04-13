@@ -24,11 +24,17 @@ permissions:
   bandata.help:
     description: Allows you to use /bd ?
     default: true
+  bandata.baninfo:
+    description: allows you to view Ban Info.
+    default: true
+    children:
+      bandata.help: true
   bandata.viewban:
     description: Allows you to view Ban Data.
     default: true
     children:
       bandata.help: true
+      bandata.baninfo: true
   bandata.listbans:
     description: Allows you to List All Bans
     default: true
@@ -44,14 +50,22 @@ permissions:
     default: false
     children:
       bandata.help: true
-      bandata.viewban: true
+      bandata.baninfo: true
       bandata.listbans: true
       bandata.bantp: true
   bandata.admin:
-    description: Allows you to delete Ban Data.
+    description: Ban Data admin.
     default: false
     children:
       bandata.help: true
-      bandata.viewban: true
+      bandata.baninfo: true
+      bandata.listbans: true
+      bandata.bantp: true
+  bandata.unban:
+    description: Allows you to UnBan players
+    default: false
+    children:
+      bandata.help: true
+      bandata.baninfo: true
       bandata.listbans: true
       bandata.bantp: true
