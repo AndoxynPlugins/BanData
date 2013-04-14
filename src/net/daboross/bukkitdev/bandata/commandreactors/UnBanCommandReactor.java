@@ -12,6 +12,7 @@ import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerData;
 import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import ru.tehkode.permissions.PermissionUser;
@@ -63,12 +64,17 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         for (int i = bans.length - 1; i > 0; i--) {
             Ban b = bans[i];
             String[] oldGroups = b.getOldGroups();
-            if (oldGroups.length > 0) {
-                if (!oldGroups[0].equals("banned")) {
-                    permissionGroupsToSet = oldGroups;
-                }
-            } else {
+            if (oldGroups.length == 0) {
                 continue;
+            }
+            List<String> groups = new ArrayList<String>();
+            for (String str : oldGroups) {
+                if (!str.equalsIgnoreCase("banned") && !groups.contains(str)) {
+                    groups.add(str);
+                }
+            }
+            if (!groups.isEmpty()) {
+                permissionGroupsToSet = groups.toArray(new String[groups.size()]);
             }
         }
         if (permissionGroupsToSet == null) {
@@ -89,6 +95,7 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         rawData.add("SET " + sender.getName() + " " + permissionGroupsToSet + " " + System.currentTimeMillis());
         Data finalData = new Data("rankrecord", rawData.toArray(new String[rawData.size()]));
         pData.addData(finalData);
+        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + pData.userName() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
         sender.sendMessage(ColorList.NAME + pData.userName() + " has been set to: " + getString(permissionGroupsToSet));
     }
 
@@ -97,7 +104,8 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
             return "None";
         }
         StringBuilder resultBuilder = new StringBuilder(strings[0]);
-        for (String string : strings) {
+        for (int i = 1; i < strings.length; i++) {
+            String string = strings[i];
             resultBuilder.append(" ,").append(string);
         }
         return resultBuilder.toString();

@@ -49,7 +49,7 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             String playerToBanUserName = playerDataHandler.getFullUsername(subCommandArgs[0]);
             PData playerToBanPData = playerDataHandler.getPData(playerToBanUserName);
             StringBuilder reasonBuilder = new StringBuilder(subCommandArgs[1]);
-            for (int i = 1; i < subCommandArgs.length; i++) {
+            for (int i = 2; i < subCommandArgs.length; i++) {
                 reasonBuilder.append(" ").append(subCommandArgs[i]);
             }
             String reason = reasonBuilder.toString();
@@ -58,11 +58,10 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             String[] oldGroups = playerToBanPData.getGroups();
             if (oldGroups == null) {
                 oldGroups = new String[]{"Basic"};
-            }
-            if (oldGroups.length < 2) {
+            } else if (oldGroups.length < 2) {
                 if (oldGroups.length == 0) {
                     oldGroups = new String[]{"Basic"};
-                } else if (oldGroups[0].equals("Unknown")) {
+                } else if (oldGroups[0].equalsIgnoreCase("Unknown")) {
                     oldGroups = new String[]{"Basic"};
                 }
             }
@@ -90,7 +89,7 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             playerDataHandler.addCustomData(playerToBanUserName, banDataToSet);
             Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
         } else {
-            sender.sendMessage(ColorList.ERROR_ARGS + "PermissionsEx" + ColorList.ERROR + " is not loaded");
+            sender.sendMessage(ColorList.ERROR + "PermissionsEx is not loaded");
         }
     }
 }
