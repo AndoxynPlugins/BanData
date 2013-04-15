@@ -61,7 +61,7 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         }
         Ban[] bans = banData.getBans();
         String[] permissionGroupsToSet = null;
-        for (int i = bans.length - 1; i > 0; i--) {
+        for (int i = bans.length - 1; i >= 0; i--) {
             Ban b = bans[i];
             String[] oldGroups = b.getOldGroups();
             if (oldGroups.length == 0) {
@@ -69,12 +69,13 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
             }
             List<String> groups = new ArrayList<String>();
             for (String str : oldGroups) {
-                if (!str.equalsIgnoreCase("banned") && !groups.contains(str)) {
+                if (!(str.equalsIgnoreCase("banned")) || (groups.contains(str))) {
                     groups.add(str);
                 }
             }
             if (!groups.isEmpty()) {
                 permissionGroupsToSet = groups.toArray(new String[groups.size()]);
+                break;
             }
         }
         if (permissionGroupsToSet == null) {
