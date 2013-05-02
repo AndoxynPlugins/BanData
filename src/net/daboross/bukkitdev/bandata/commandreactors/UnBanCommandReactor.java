@@ -93,7 +93,7 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
             rawData = new ArrayList<String>();
         }
         permissionUser.setGroups(permissionGroupsToSet);
-        rawData.add("SET " + sender.getName() + " " + permissionGroupsToSet + " " + System.currentTimeMillis());
+        rawData.add("SET " + sender.getName() + " " + Arrays.asList(permissionGroupsToSet) + " " + System.currentTimeMillis());
         Data finalData = new Data("rankrecord", rawData.toArray(new String[rawData.size()]));
         pData.addData(finalData);
         Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + pData.userName() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
@@ -107,7 +107,7 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         StringBuilder resultBuilder = new StringBuilder(strings[0]);
         for (int i = 1; i < strings.length; i++) {
             String string = strings[i];
-            resultBuilder.append(" ,").append(string);
+            resultBuilder.append(", ").append(string);
         }
         return resultBuilder.toString();
     }
