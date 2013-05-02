@@ -3,6 +3,7 @@ package net.daboross.bukkitdev.bandata;
 import java.util.ArrayList;
 import net.daboross.bukkitdev.bandata.commandreactors.BanCommandReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.BanInfoCommandReactor;
+import net.daboross.bukkitdev.bandata.commandreactors.BanRecordClearReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.UnBanCommandReactor;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
@@ -22,8 +23,8 @@ import org.bukkit.entity.Player;
  */
 public class BanDataCommandExecutor extends CommandExecutorBase implements CommandExecutorBase.CommandReactor {
 
-    private PlayerDataHandler playerDataHandler;
-    private BanData banDataMain;
+    private final PlayerDataHandler playerDataHandler;
+    private final BanData banDataMain;
 
     protected BanDataCommandExecutor(BanData bd) {
         this.banDataMain = bd;
@@ -35,6 +36,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         initCommand("listbans", new String[]{"list", "bl", "lb"}, true, "bandata.listbans", new String[]{"PageNumber"}, "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned", this);
         initCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase", this);
         initCommand("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player", new UnBanCommandReactor(playerDataHandler));
+        initCommand("clearban", true, "bandata.admin.clearban", new String[]{"Player"}, "Clears the last ban off of a Player's ban record.", new BanRecordClearReactor(playerDataHandler));
     }
 
     @Override
@@ -84,7 +86,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         if (number == -1) {
             try {
                 number = Integer.valueOf(args[1]);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
                 sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
                 return;
@@ -117,7 +119,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         } else {
             try {
                 pageNumber = Integer.valueOf(args[0]);
-            } catch (Exception e) {
+            } catch (NumberFormatException nfe) {
                 sender.sendMessage(ColorList.ERROR_ARGS + args[0] + ColorList.ERROR + " is not a number.");
                 sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
                 return;
