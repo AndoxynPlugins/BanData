@@ -1,4 +1,3 @@
-
 package net.daboross.bukkitdev.bandata.commandreactors;
 
 import java.util.ArrayList;
