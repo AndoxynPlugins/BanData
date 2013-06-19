@@ -1,7 +1,5 @@
 package net.daboross.bukkitdev.bandata.commandreactors;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
 import net.daboross.bukkitdev.bandata.DataParser;
@@ -12,7 +10,6 @@ import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import ru.tehkode.permissions.PermissionUser;
 
 /**
  *

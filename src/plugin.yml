@@ -4,7 +4,7 @@ version: 1.4
 author: Dabo Ross
 prefix: BD
 description: This plugin is an extension of PlayerData that records BanData
-depend: [PermissionsEx, PlayerData]
+depend: [Vault, PlayerData]
 commands:
    bd:
      description: This is the base command for Ban Data.

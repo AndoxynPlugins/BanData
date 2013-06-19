@@ -14,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import ru.tehkode.permissions.PermissionUser;
 
 /**
  *
@@ -35,7 +34,7 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             sender.sendMessage(executorBridge.getHelpMessage(subCommandLabel, mainCommandLabel));
             return;
         }
-        if (PlayerData.isPEX()) {
+        if (PlayerData.isVaultLoaded()) {
             if (!playerDataHandler.doesPlayerExists(subCommandArgs[0])) {
                 sender.sendMessage(ColorList.MAIN + "No Player whoes full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.MAIN + " was found.");
                 sender.sendMessage(ColorList.MAIN + "Do To The Nature of this command, please specify the full username of a player.");
@@ -54,18 +53,18 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             }
             String reason = reasonBuilder.toString();
             sender.sendMessage(ColorList.MAIN + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.MAIN + " for " + ColorList.NUMBER + reason);
-            PermissionUser permPlayer = playerToBanPData.getPermUser();
             String[] oldGroups = playerToBanPData.getGroups();
             if (oldGroups == null) {
                 oldGroups = new String[]{"Basic"};
             } else if (oldGroups.length < 2) {
-                if (oldGroups.length == 0) {
-                    oldGroups = new String[]{"Basic"};
-                } else if (oldGroups[0].equalsIgnoreCase("Unknown")) {
+                if (oldGroups.length == 0 || oldGroups[0].equalsIgnoreCase("Unknown")) {
                     oldGroups = new String[]{"Basic"};
                 }
             }
-            permPlayer.setGroups(new String[]{"Banned"});
+            for (String group : oldGroups) {
+                PlayerData.getPermissionHandler().playerRemoveGroup((String) null, playerToBanUserName, group);
+            }
+            PlayerData.getPermissionHandler().playerAddGroup((String)null, playerToBanUserName, "Banned");
             Ban ban;
             if (sender instanceof Player) {
                 Player player = (Player) sender;

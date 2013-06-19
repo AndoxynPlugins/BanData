@@ -15,7 +15,6 @@ import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import ru.tehkode.permissions.PermissionUser;
 
 /**
  *
@@ -82,9 +81,8 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
             sender.sendMessage(ColorList.ERROR + "Error parsing BanData! No Previous Groups Found!");
             return;
         }
-        PermissionUser permissionUser = pData.getPermUser();
-        if (!(PlayerData.isPEX() && permissionUser != null)) {
-            sender.sendMessage(ColorList.ERROR + "PEX Not Loaded!");
+        if (!(PlayerData.isVaultLoaded())) {
+            sender.sendMessage(ColorList.ERROR + "Vault Permission Handler Not Found!");
         }
         List<String> rawData;
         if (pData.hasData("rankrecord")) {
@@ -92,7 +90,9 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         } else {
             rawData = new ArrayList<String>();
         }
-        permissionUser.setGroups(permissionGroupsToSet);
+        for (String group : permissionGroupsToSet) {
+            PlayerData.getPermissionHandler().playerAddGroup((String) null, pData.userName(), group);
+        }
         rawData.add("SET " + sender.getName() + " " + Arrays.asList(permissionGroupsToSet) + " " + System.currentTimeMillis());
         Data finalData = new Data("rankrecord", rawData.toArray(new String[rawData.size()]));
         pData.addData(finalData);
