@@ -90,6 +90,7 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         } else {
             rawData = new ArrayList<String>();
         }
+        PlayerData.getPermissionHandler().playerRemoveGroup((String) null, pData.userName(), "Banned");
         for (String group : permissionGroupsToSet) {
             PlayerData.getPermissionHandler().playerAddGroup((String) null, pData.userName(), group);
         }

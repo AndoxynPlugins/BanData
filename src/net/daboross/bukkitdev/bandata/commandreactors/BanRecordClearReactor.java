@@ -60,7 +60,7 @@ public class BanRecordClearReactor implements CommandExecutorBase.CommandReactor
         } else {
             Ban[] newBans = new Ban[bans.length - 1];
             System.arraycopy(bans, 0, newBans, 0, bans.length - 1);
-            BData newBanData = new BData(bans, pData);
+            BData newBanData = new BData(newBans, pData);
             Data newRawData = new Data("bandata", DataParser.parseToList(newBanData));
             pData.addData(newRawData);
             sender.sendMessage(ColorList.NAME + pData.userName() + ColorList.MAIN + "'s last ban has been cleared.");
