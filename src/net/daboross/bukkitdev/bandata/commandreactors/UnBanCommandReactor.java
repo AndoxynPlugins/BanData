@@ -94,10 +94,10 @@ public class UnBanCommandReactor implements CommandExecutorBase.CommandReactor {
         for (String group : permissionGroupsToSet) {
             PlayerData.getPermissionHandler().playerAddGroup((String) null, pData.userName(), group);
         }
-        rawData.add("SET " + sender.getName() + " " + Arrays.asList(permissionGroupsToSet) + " " + System.currentTimeMillis());
+        rawData.add("SET " + sender.getName() + " " + Arrays.toString(permissionGroupsToSet) + " " + System.currentTimeMillis());
         Data finalData = new Data("rankrecord", rawData.toArray(new String[rawData.size()]));
         pData.addData(finalData);
-        Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + pData.userName() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
+        Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + pData.userName() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
         sender.sendMessage(ColorList.NAME + pData.userName() + " has been set to: " + getString(permissionGroupsToSet));
     }
 

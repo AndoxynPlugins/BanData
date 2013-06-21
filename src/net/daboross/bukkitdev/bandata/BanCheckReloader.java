@@ -1,5 +1,6 @@
 package net.daboross.bukkitdev.bandata;
 
+import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PData;
@@ -21,9 +22,9 @@ public class BanCheckReloader {
      * is banned.
      */
     public void goThrough() {
-        PData[] pDatas = main.getPlayerData().getHandler().getAllPDatas();
-        for (int i = 0; i < pDatas.length; i++) {
-            PData current = pDatas[i];
+        List<PData> pDatas = main.getPlayerData().getHandler().getAllPDatas();
+        for (int i = 0; i < pDatas.size(); i++) {
+            PData current = pDatas.get(i);
             if (current.isGroup("Banned")) {
                 if (!current.hasData("bandata")) {
                     current.addData(new Data("bandata", DataParser.parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}, current))));

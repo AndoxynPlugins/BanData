@@ -129,18 +129,18 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
                 return;
             }
         }
-        BData[] banDataList = DataParser.parseAll(playerDataHandler.getAllDatas("bandata"));
+        BData[] banDataArray = DataParser.parseAll(playerDataHandler.getAllDatas("bandata"));
         ArrayList<String> messagesToSend = new ArrayList<String>();
         messagesToSend.add("");
-        messagesToSend.add(ColorList.MAIN_DARK + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN_DARK + ":");
-        for (int i = ((pageNumber - 1) * 6); i < banDataList.length && i < ((pageNumber - 1) * 6) + 6; i++) {
-            BData currentBanData = banDataList[i];
+        messagesToSend.add(ColorList.MAIN + "Ban List, Page " + ColorList.NUMBER + pageNumber + ColorList.MAIN + "out of " + ColorList.NUMBER + banDataArray.length / 6 + ColorList.MAIN + ":");
+        for (int i = ((pageNumber - 1) * 6); i < banDataArray.length && i < ((pageNumber - 1) * 6) + 6; i++) {
+            BData currentBanData = banDataArray[i];
             messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
                     + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? " ban recorded" : " bans recorded")
                     + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }
-        if (pageNumber < (banDataList.length / 6.0)) {
-            messagesToSend.add(ColorList.MAIN_DARK + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
+        if (pageNumber < (banDataArray.length / 6.0)) {
+            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[messagesToSend.size()]));
     }

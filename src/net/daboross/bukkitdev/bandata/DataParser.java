@@ -152,4 +152,12 @@ public class DataParser {
         }
         return returnList;
     }
+
+    protected static BData[] parseAll(final List<Data> data) {
+        BData[] returnList = new BData[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            returnList[i] = parseFromlist(data.get(i));
+        }
+        return returnList;
+    }
 }

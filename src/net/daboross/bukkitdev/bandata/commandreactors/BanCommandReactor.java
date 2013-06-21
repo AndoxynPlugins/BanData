@@ -64,7 +64,7 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             for (String group : oldGroups) {
                 PlayerData.getPermissionHandler().playerRemoveGroup((String) null, playerToBanUserName, group);
             }
-            PlayerData.getPermissionHandler().playerAddGroup((String)null, playerToBanUserName, "Banned");
+            PlayerData.getPermissionHandler().playerAddGroup((String) null, playerToBanUserName, "Banned");
             Ban ban;
             if (sender instanceof Player) {
                 Player player = (Player) sender;
@@ -86,7 +86,7 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
             String[] newRawBanData = DataParser.parseToList(banData);
             Data banDataToSet = new Data("bandata", newRawBanData);
             playerDataHandler.addCustomData(playerToBanUserName, banDataToSet);
-            Bukkit.getServer().broadcastMessage(ColorList.getBroadcastName("BanData") + " " + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason);
+            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.NUMBER + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
         } else {
             sender.sendMessage(ColorList.ERROR + "PermissionsEx is not loaded");
         }
