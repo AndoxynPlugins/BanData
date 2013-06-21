@@ -7,6 +7,8 @@ import net.daboross.bukkitdev.bandata.commandreactors.BanRecordClearReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.UnBanCommandReactor;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PlayerData;
 import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
@@ -15,14 +17,16 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 /**
  *
  * @author daboross
  */
-public class BanDataCommandExecutor extends CommandExecutorBase implements CommandExecutorBase.CommandReactor {
+public class BanDataCommandExecutor implements SubCommandHandler {
 
+    private final CommandExecutorBase commandExecutorBase;
     private final PlayerDataHandler playerDataHandler;
     private final BanData banDataMain;
 
@@ -30,36 +34,40 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         this.banDataMain = bd;
         PlayerData playerDataMain = banDataMain.getPlayerData();
         this.playerDataHandler = playerDataMain.getHandler();
-        initCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerDataHandler));
-        initCommand("baninfo", new String[]{"bi", "i"}, true, "bandata.baninfo", new String[]{"Player"}, "Views Ban Info On a Player", new BanInfoCommandReactor(playerDataHandler));
-        initCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", new String[]{"Player"}, "This Command Teleports You To Where Someone Was Banned.", this);
-        initCommand("list", new String[]{"l"}, true, "bandata.listbans", new String[]{"PageNumber"}, "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned", this);
-        initCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase", this);
-        initCommand("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player", new UnBanCommandReactor(playerDataHandler));
-        initCommand("clearban", true, "bandata.admin.clearban", new String[]{"Player"}, "Clears the last ban off of a Player's ban record.", new BanRecordClearReactor(playerDataHandler));
+        commandExecutorBase = new CommandExecutorBase("bandata.help");
+        commandExecutorBase.addSubCommand(new SubCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerDataHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("baninfo", new String[]{"bi", "i"}, true, "bandata.baninfo", new String[]{"Player"}, "Views Ban Info On a Player", new BanInfoCommandReactor(playerDataHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", new String[]{"Player"}, "This Command Teleports You To Where Someone Was Banned.", this));
+        commandExecutorBase.addSubCommand(new SubCommand("list", new String[]{"l"}, true, "bandata.listbans", new String[]{"PageNumber"}, "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned", this));
+        commandExecutorBase.addSubCommand(new SubCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase", this));
+        commandExecutorBase.addSubCommand(new SubCommand("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player", new UnBanCommandReactor(playerDataHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("clearban", true, "bandata.admin.clearban", new String[]{"Player"}, "Clears the last ban off of a Player's ban record.", new BanRecordClearReactor(playerDataHandler)));
+    }
+
+    protected void registerCommand(PluginCommand command) {
+        command.setExecutor(commandExecutorBase);
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command mainCommand, String mainCommandLabel, String subCommand, String subCommandLabel,
-            String[] subCommandArgs, CommandExecutorBridge executorBridge) {
-        if (subCommand.equalsIgnoreCase("bantp")) {
-            runBanTpCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
-        } else if (subCommand.equalsIgnoreCase("list")) {
-            runListCommand(sender, mainCommand, subCommandLabel, subCommandArgs);
-        } else if (subCommand.equalsIgnoreCase("checkbans")) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
+        if (subCommand.getName().equalsIgnoreCase("bantp")) {
+            runBanTpCommand(sender, subCommand, baseCommandLabel, subCommandLabel, subCommandArgs);
+        } else if (subCommand.getName().equalsIgnoreCase("list")) {
+            runListCommand(sender, subCommand, baseCommandLabel, subCommandLabel, subCommandArgs);
+        } else if (subCommand.getName().equalsIgnoreCase("checkbans")) {
             runBanCheckCommand();
         }
     }
 
-    private void runBanTpCommand(CommandSender sender, Command cmd, String aliasLabel, String[] args) {
+    private void runBanTpCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
-            sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (args.length > 2) {
-            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorList.SUBCMD + aliasLabel);
-            sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorList.SUBCMD + subCommandLabel);
+            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         String playerUserName = playerDataHandler.getFullUsername(args[0]);
@@ -79,7 +87,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
                 number = 0;
             } else {
                 sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-                sender.sendMessage(ColorList.MAIN + "Type " + ColorList.CMD + "/" + cmd.getLabel() + " " + ColorList.SUBCMD + aliasLabel + " " + ColorList.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorList.MAIN + " for more info on a ban");
+                sender.sendMessage(ColorList.MAIN + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorList.MAIN + " for more info on a ban");
                 return;
             }
         }
@@ -87,8 +95,8 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
             try {
                 number = Integer.valueOf(args[1]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not a number.");
-                sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not an integer.");
+                sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
                 return;
             }
         }
@@ -109,9 +117,9 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
     }
 
-    private void runListCommand(CommandSender sender, Command cmd, String aliasLabel, String[] subCommandArgs) {
+    private void runListCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length > 1) {
-            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 Number After " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel);
+            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 Number After " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel);
         }
         int pageNumber;
         if (subCommandArgs.length == 0) {
@@ -121,7 +129,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
                 pageNumber = Integer.valueOf(subCommandArgs[0]);
             } catch (NumberFormatException nfe) {
                 sender.sendMessage(ColorList.ERROR_ARGS + subCommandArgs[0] + ColorList.ERROR + " is not an integer.");
-                sender.sendMessage(getHelpMessage(aliasLabel, cmd.getLabel()));
+                sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
                 return;
             }
             if (pageNumber == 0) {
@@ -143,7 +151,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
                     + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }
         if (pageNumber < (banDataArray.length / 6.0)) {
-            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + cmd.getName() + ColorList.SUBCMD + " " + aliasLabel + ColorList.ARGS + " " + (pageNumber + 1));
+            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[messagesToSend.size()]));
     }
@@ -154,15 +162,5 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
 
     private void runBanCheckCommand() {
         banDataMain.getBanCheckReloader().goThrough();
-    }
-
-    @Override
-    public String getCommandName() {
-        return "bd";
-    }
-
-    @Override
-    protected String getMainCmdPermission() {
-        return "bandata.help";
     }
 }

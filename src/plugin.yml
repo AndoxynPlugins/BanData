@@ -6,10 +6,10 @@ prefix: BD
 description: This plugin is an extension of PlayerData that records BanData
 depend: [Vault, PlayerData]
 commands:
-   bd:
+   bandata:bandata:
      description: This is the base command for Ban Data.
-     usage: /<command> [subcommand] (You can use /<command> ? for list of sub commands)
-     aliases: [bandata, bdata, band]
+     usage: /<command> ?
+     aliases: [bandata, bdata, band, bd]
 permissions:
   bandata.*:
     description: Gives access to all BanData commands

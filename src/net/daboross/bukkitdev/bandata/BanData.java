@@ -35,11 +35,11 @@ public class BanData extends JavaPlugin {
             return;
         }
         bdce = new BanDataCommandExecutor(this);
-        PluginCommand bd = getCommand("bd");
-        if (bd == null) {
-            getLogger().log(Level.SEVERE, "Ban Data Command Not Found!");
+        PluginCommand bandata = getCommand("bandata:bandata");
+        if (bandata == null) {
+            getLogger().log(Level.WARNING, "bandata:bandata command not found! Is another plugin using it?");
         } else {
-            bd.setExecutor(bdce);
+            bdce.registerCommand(bandata);
         }
         playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         banCheckReloader = new BanCheckReloader(this);

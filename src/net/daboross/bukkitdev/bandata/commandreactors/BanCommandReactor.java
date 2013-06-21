@@ -4,7 +4,8 @@ import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
 import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PData;
 import net.daboross.bukkitdev.playerdata.PlayerData;
@@ -19,7 +20,7 @@ import org.bukkit.entity.Player;
  *
  * @author daboross
  */
-public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
+public class BanCommandReactor implements SubCommandHandler {
 
     private final PlayerDataHandler playerDataHandler;
 
@@ -27,11 +28,10 @@ public class BanCommandReactor implements CommandExecutorBase.CommandReactor {
         this.playerDataHandler = pDataH;
     }
 
-    public void runCommand(CommandSender sender, Command mainCommand, String mainCommandLabel, String subCommand, String subCommandLabel,
-            String[] subCommandArgs, CommandExecutorBase.CommandExecutorBridge executorBridge) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 2) {
             sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name and a Ban Reason!");
-            sender.sendMessage(executorBridge.getHelpMessage(subCommandLabel, mainCommandLabel));
+            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (PlayerData.isVaultLoaded()) {

@@ -28,7 +28,7 @@ public class BanCheckReloader {
             if (current.isGroup("Banned")) {
                 if (!current.hasData("bandata")) {
                     current.addData(new Data("bandata", DataParser.parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}, current))));
-                    main.getLogger().log(Level.INFO, "{0} has an UnRecorded BAN! Type /bd redo {0} REASON to add a reason", current.userName());
+                    main.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", current.userName());
                 }
             }
         }
