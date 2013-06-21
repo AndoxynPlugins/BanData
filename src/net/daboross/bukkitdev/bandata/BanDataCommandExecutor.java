@@ -131,7 +131,7 @@ public class BanDataCommandExecutor extends CommandExecutorBase implements Comma
         }
         BData[] banDataArray = DataParser.parseAll(playerDataHandler.getAllDatas("bandata"));
         ArrayList<String> messagesToSend = new ArrayList<String>();
-        messagesToSend.add(ColorList.TOP_OF_LIST_SEPERATOR + "--" + ColorList.TOP_OF_LIST + " Ban List" + ColorList.TOP_OF_LIST_SEPERATOR + " -- " + ColorList.NUMBER + pageNumber + ColorList.TOP_OF_LIST + " / " + ColorList.NUMBER + (banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1) + ColorList.TOP_OF_LIST_SEPERATOR + " --");
+        messagesToSend.add(ColorList.TOP_OF_LIST_SEPERATOR + "--" + ColorList.TOP_OF_LIST + " Ban List" + ColorList.TOP_OF_LIST_SEPERATOR + " -- " + ColorList.NUMBER + (pageNumber + 1) + ColorList.TOP_OF_LIST + "/" + ColorList.NUMBER + ((banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1)) + ColorList.TOP_OF_LIST_SEPERATOR + " --");
         for (int i = ((pageNumber - 1) * 6); i < banDataArray.length && i < ((pageNumber - 1) * 6) + 6; i++) {
             BData currentBanData = banDataArray[i];
             messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
