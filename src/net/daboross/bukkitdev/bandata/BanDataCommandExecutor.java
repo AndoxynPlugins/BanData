@@ -61,33 +61,33 @@ public class BanDataCommandExecutor implements SubCommandHandler {
 
     private void runBanTpCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player Name to get info from!");
+            sender.sendMessage(ColorList.ERR + "Please specify a player to get info for");
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (args.length > 2) {
-            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Only Use One Word and a number after " + ColorList.SUBCMD + subCommandLabel);
+            sender.sendMessage(ColorList.ERR + "Please use only one word and a number after " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + ColorList.ERR + ".");
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         String playerUserName = playerDataHandler.getFullUsername(args[0]);
         if (playerUserName == null) {
-            sender.sendMessage(ColorList.MAIN + "The Player " + ColorList.NAME + args[0] + ColorList.MAIN + " was not found.");
+            sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + args[0] + ColorList.ERR + " not found");
             return;
         }
         Data rawData = playerDataHandler.getCustomData(playerUserName, "bandata");
         if (rawData == null) {
-            sender.sendMessage(ColorList.MAIN + "Found no ban data for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + ".");
+            sender.sendMessage(ColorList.ERR + "Found no ban data for player " + ColorList.NAME + playerUserName);
             return;
         }
         BData banData = DataParser.parseFromlist(rawData);
         int number = -1;
         if (args.length < 2) {
             if (banData.getBans().length < 2) {
-                number = 0;
+                number = 1;
             } else {
                 sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-                sender.sendMessage(ColorList.MAIN + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + args[0] + " {0-" + (banData.getBans().length - 1) + "}" + ColorList.MAIN + " for more info on a ban");
+                sender.sendMessage(ColorList.REG + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + args[0] + " <1-" + (banData.getBans().length) + ">" + ColorList.REG + " for information on a ban.");
                 return;
             }
         }
@@ -95,31 +95,34 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             try {
                 number = Integer.valueOf(args[1]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(ColorList.ERROR_ARGS + args[1] + ColorList.ERROR + " is not an integer.");
+                sender.sendMessage(ColorList.ERR_ARGS + args[1] + ColorList.ERR + " is not an integer.");
                 sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
                 return;
             }
         }
-        if (banData.getBans()[number].isConsoleBan()) {
-            sender.sendMessage(ColorList.MAIN + "Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for Player " + ColorList.NAME + playerUserName + ColorList.MAIN + " Does Not Have a Position Associated With It.");
+        if (number < 1) {
+            sender.sendMessage(ColorList.ERR_ARGS + args[1] + ColorList.ERR + " is not a non-0 positive integer.");
+        }
+        if (banData.getBans()[number - 1].isConsoleBan()) {
+            sender.sendMessage(ColorList.ERR + "Ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerUserName + ColorList.ERR + " does not have a position associated with it.");
             return;
         }
         Player player = (Player) sender;
-        Ban ban = banData.getBans()[number];
+        Ban ban = banData.getBans()[number - 1];
         World world = Bukkit.getServer().getWorld(ban.getWorld());
         if (world == null) {
-            sender.sendMessage(ColorList.ERROR + "Could Not Find The World Associated With Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for Player " + ColorList.NAME + playerUserName);
+            sender.sendMessage(ColorList.ERR + "Could not find the world associated with ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerUserName);
             return;
         }
-        sender.sendMessage(ColorList.MAIN + "Teleporting You to Position Associated With Ban Number " + ColorList.NUMBER + number + ColorList.MAIN + " for " + ColorList.NAME + playerUserName);
+        sender.sendMessage(ColorList.REG + "Teleporting you to the position associated with ban number " + ColorList.DATA + number + ColorList.REG + " for player " + ColorList.NAME + playerUserName);
         Location loc = new Location(world, (double) ban.getXPos(), (double) ban.getYPos(), (double) ban.getZPos());
         player.teleport(loc);
-        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number));
+        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number - 1));
     }
 
     private void runListCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length > 1) {
-            sender.sendMessage(ColorList.MAIN + "Please Use Only 1 Number After " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel);
+            sender.sendMessage(ColorList.ERR + "Please use only one number after " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel);
         }
         int pageNumber;
         if (subCommandArgs.length == 0) {
@@ -128,30 +131,30 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             try {
                 pageNumber = Integer.valueOf(subCommandArgs[0]);
             } catch (NumberFormatException nfe) {
-                sender.sendMessage(ColorList.ERROR_ARGS + subCommandArgs[0] + ColorList.ERROR + " is not an integer.");
+                sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " is not an integer.");
                 sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
                 return;
             }
             if (pageNumber == 0) {
-                sender.sendMessage(ColorList.ERROR_ARGS + subCommandArgs[0] + ColorList.ERROR + " is not a non-0 integer.");
+                sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " is not a non-0 integer.");
                 return;
             } else if (pageNumber < 0) {
-                sender.sendMessage(ColorList.ERROR_ARGS + subCommandArgs[0] + ColorList.ERROR + " is not a positive integer.");
+                sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " is not a positive integer.");
                 return;
             }
         }
         int pageNumberReal = pageNumber - 1;
         BData[] banDataArray = DataParser.parseAll(playerDataHandler.getAllDatas("bandata"));
         ArrayList<String> messagesToSend = new ArrayList<String>();
-        messagesToSend.add(ColorList.TOP_OF_LIST_SEPERATOR + " --" + ColorList.TOP_OF_LIST + " Ban List " + ColorList.TOP_OF_LIST_SEPERATOR + "--" + ColorList.TOP_OF_LIST + " Page " + ColorList.NUMBER + pageNumber + ColorList.TOP_OF_LIST + "/" + ColorList.NUMBER + ((banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1)) + ColorList.TOP_OF_LIST_SEPERATOR + " --");
+        messagesToSend.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban List " + ColorList.TOP_SEPERATOR + "--" + ColorList.TOP + " Page " + ColorList.DATA + pageNumber + ColorList.TOP + "/" + ColorList.DATA + ((banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1)) + ColorList.TOP_SEPERATOR + " --");
         for (int i = (pageNumberReal * 6); i < ((pageNumberReal + 1) * 6) && i < banDataArray.length; i++) {
             BData currentBanData = banDataArray[i];
-            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.MAIN
-                    + " has " + ColorList.NUMBER + currentBanData.getBans().length + ColorList.MAIN + ((currentBanData.getBans().length == 1) ? " ban" : " bans")
+            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.REG
+                    + " has " + ColorList.DATA + currentBanData.getBans().length + ColorList.REG + ((currentBanData.getBans().length == 1) ? " ban" : " bans")
                     + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }
         if (pageNumber < (banDataArray.length / 6.0)) {
-            messagesToSend.add(ColorList.MAIN + "To View The Next Page, Type: " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel + ColorList.ARGS + " " + (pageNumber + 1));
+            messagesToSend.add(ColorList.REG + "To view the next page type " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[messagesToSend.size()]));
     }

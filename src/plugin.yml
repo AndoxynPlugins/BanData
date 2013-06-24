@@ -1,6 +1,6 @@
 name: BanData
 main: net.daboross.bukkitdev.bandata.BanData
-version: 1.5
+version: 1.6
 author: Dabo Ross
 prefix: BD
 description: This plugin is an extension of PlayerData that records BanData

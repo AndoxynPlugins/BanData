@@ -31,32 +31,32 @@ public class UnBanCommandReactor implements SubCommandHandler {
 
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 1) {
-            sender.sendMessage(ColorList.ILLEGALARGUMENT + "Please Specify a Player!");
+            sender.sendMessage(ColorList.ERR + "Please specify a player.");
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (subCommandArgs.length > 1) {
-            sender.sendMessage(ColorList.ILLEGALARGUMENT + "To Many Arguments!");
+            sender.sendMessage(ColorList.ERR + "To many arguments");
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         PData pData = playerDataHandler.getPData(subCommandArgs[0]);
         if (pData == null) {
-            sender.sendMessage(ColorList.ERROR + "Player: " + ColorList.ERROR_ARGS + subCommandArgs[0] + ColorList.ERROR + " not found!");
+            sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
             return;
         }
         if (!pData.isGroup("banned")) {
-            sender.sendMessage(ColorList.ERROR_ARGS + pData.userName() + ColorList.ERROR + " is not currently banned!");
+            sender.sendMessage(ColorList.ERR_ARGS + pData.userName() + ColorList.ERR + " is not currently banned");
             return;
         }
         Data data = pData.getData("bandata");
         if (data == null) {
-            sender.sendMessage(ColorList.ERROR + "No bandata found for " + ColorList.ERROR_ARGS + pData.userName());
+            sender.sendMessage(ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pData.userName());
             return;
         }
         BData banData = DataParser.parseFromlist(data);
         if (banData == null) {
-            sender.sendMessage(ColorList.ERROR + "Error parsing BanData!");
+            sender.sendMessage(ColorList.ERR + "Error parsing BanData");
             return;
         }
         Ban[] bans = banData.getBans();
@@ -79,11 +79,11 @@ public class UnBanCommandReactor implements SubCommandHandler {
             }
         }
         if (permissionGroupsToSet == null) {
-            sender.sendMessage(ColorList.ERROR + "Error parsing BanData! No Previous Groups Found!");
+            sender.sendMessage(ColorList.ERR + "Error parsing BanData. No previous groups found");
             return;
         }
         if (!(PlayerData.isVaultLoaded())) {
-            sender.sendMessage(ColorList.ERROR + "Vault Permission Handler Not Found!");
+            sender.sendMessage(ColorList.ERR + "Vault permission handler not found");
         }
         List<String> rawData;
         if (pData.hasData("rankrecord")) {
