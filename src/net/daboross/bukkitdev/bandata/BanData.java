@@ -17,6 +17,7 @@ public class BanData extends JavaPlugin {
     private BanDataCommandExecutor bdce;
     private static BanData currentInstance;
     private BanCheckReloader banCheckReloader;
+    private BanDataJoinListener bdjl;
 
     @Override
     public void onEnable() {
@@ -45,12 +46,14 @@ public class BanData extends JavaPlugin {
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
         currentInstance = this;
-        registerJoinListener();
-        getLogger().log(Level.INFO, "BanData Enabled");
+        bdjl = new BanDataJoinListener(this);
+        playerData.getHandler().addJoinListener(bdjl);
+        getLogger().log(Level.INFO, "BanData Fully Enabled");
     }
 
     @Override
     public void onDisable() {
+        playerData.getHandler().removeJoinListener(bdjl);
         currentInstance = null;
     }
 
@@ -64,9 +67,5 @@ public class BanData extends JavaPlugin {
 
     protected static BanData getCurrentInstance() {
         return currentInstance;
-    }
-
-    private void registerJoinListener() {
-        playerData.getHandler().addJoinListener(new BanDataJoinListener(this));
     }
 }
