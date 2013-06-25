@@ -45,6 +45,7 @@ public class BanData extends JavaPlugin {
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
         currentInstance = this;
+        registerJoinListener();
         getLogger().log(Level.INFO, "BanData Enabled");
     }
 
@@ -63,5 +64,9 @@ public class BanData extends JavaPlugin {
 
     protected static BanData getCurrentInstance() {
         return currentInstance;
+    }
+
+    private void registerJoinListener() {
+        playerData.getHandler().addJoinListener(new BanDataJoinListener(this));
     }
 }
