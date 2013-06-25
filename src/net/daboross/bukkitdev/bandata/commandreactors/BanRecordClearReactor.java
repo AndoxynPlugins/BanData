@@ -26,7 +26,7 @@ public class BanRecordClearReactor implements SubCommandHandler {
 
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 1) {
-            sender.sendMessage(ColorList.ERR+ "Please specify a player");
+            sender.sendMessage(ColorList.ERR + "Please specify a player");
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
@@ -57,14 +57,14 @@ public class BanRecordClearReactor implements SubCommandHandler {
         Ban[] bans = banData.getBans();
         if (bans.length == 1) {
             pData.removeData("bandata");
-            sender.sendMessage(ColorList.NAME + pData.userName() + ColorList.REG+ "'s ban record has been cleared");
+            sender.sendMessage(ColorList.NAME + pData.userName() + ColorList.REG + "'s ban record has been cleared");
         } else {
             Ban[] newBans = new Ban[bans.length - 1];
             System.arraycopy(bans, 0, newBans, 0, bans.length - 1);
             BData newBanData = new BData(newBans, pData);
             Data newRawData = new Data("bandata", DataParser.parseToList(newBanData));
             pData.addData(newRawData);
-            sender.sendMessage(ColorList.NAME + pData.userName() + ColorList.REG+ "'s last ban has been cleared.");
+            sender.sendMessage(ColorList.NAME + pData.userName() + ColorList.REG + "'s last ban has been cleared.");
         }
     }
 }
