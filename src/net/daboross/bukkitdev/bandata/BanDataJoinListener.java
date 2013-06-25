@@ -38,9 +38,9 @@ public class BanDataJoinListener implements PDPlayerJoinListener {
                 if (bData != null) {
                     int numberOfBans = bData.getBans().length;
                     if (numberOfBans == 1) {
-                        pje.getPlayer().sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp");
+                        pje.getPlayer().sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + (p.getName().length() <= 3 ? p.getName() : p.getName().substring(0, 3)));
                     } else if (numberOfBans > 1) {
-                        pje.getPlayer().sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + numberOfBans);
+                        pje.getPlayer().sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + (p.getName().length() <= 3 ? p.getName() : p.getName().substring(0, 3)) + " " + numberOfBans);
                     }
                 }
             }
