@@ -51,7 +51,7 @@ public class BanInfoCommandReactor implements SubCommandHandler {
                 number = 1;
             } else {
                 sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
-                sender.sendMessage(ColorList.REG + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + subCommandArgs[0] + " <1-" + (banData.getBans().length) + ">" + ColorList.REG + "for info on a ban");
+                sender.sendMessage(ColorList.REG + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + subCommandArgs[0] + " <1-" + (banData.getBans().length) + ">" + ColorList.REG + " for info on a ban");
                 return;
             }
         }
@@ -64,6 +64,6 @@ public class BanInfoCommandReactor implements SubCommandHandler {
                 return;
             }
         }
-        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number - 1));
+        sender.sendMessage(InfoParser.banInfo(rawData, banData, number - 1));
     }
 }
