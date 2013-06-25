@@ -117,7 +117,7 @@ public class BanDataCommandExecutor implements SubCommandHandler {
         sender.sendMessage(ColorList.REG + "Teleporting you to the position associated with ban number " + ColorList.DATA + number + ColorList.REG + " for player " + ColorList.NAME + playerUserName);
         Location loc = new Location(world, (double) ban.getXPos(), (double) ban.getYPos(), (double) ban.getZPos());
         player.teleport(loc);
-        sender.sendMessage(InfoParser.getInstance().banInfo(rawData, banData, number - 1));
+        sender.sendMessage(InfoParser.banInfo(rawData, banData, number - 1));
     }
 
     private void runListCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
