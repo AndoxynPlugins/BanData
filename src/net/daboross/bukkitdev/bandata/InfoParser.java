@@ -100,10 +100,10 @@ public class InfoParser implements DataDisplayParser {
         }
         boolean isBannerAvalible = !"Unknown".equalsIgnoreCase(banToView.getBanner());
         List<String> infoList = new ArrayList<String>(7);
-        infoList.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban " + ColorList.DATA + banNumber + ColorList.TOP + " for " + ColorList.NAME + userName + ColorList.TOP_SEPERATOR + " --");
-        infoList.add(ColorList.REG + "Ban Occurred " + ColorList.DATA + PlayerData.getFormattedDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.REG + " ago.");
-        infoList.add(ColorList.REG + "Ban Reason: " + ColorList.DATA + banToView.getReason());
-        infoList.add(ColorList.NAME + userName + ColorList.REG + (owner.isGroup("Banned") ? " is still banned" : "is not currently banned"));
+        infoList.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban " + ColorList.DATA + (banNumber + 1) + ColorList.TOP + " of " + ColorList.NAME + userName + ColorList.TOP_SEPERATOR + " --");
+        infoList.add(ColorList.REG + "Ban occurred " + ColorList.DATA + PlayerData.getFormattedDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.REG + " ago.");
+        infoList.add(ColorList.REG + "Ban was for " + ColorList.DATA + banToView.getReason());
+        infoList.add(ColorList.NAME + userName + ColorList.REG + (owner.isGroup("Banned") ? " is still banned" : " is not currently banned"));
         infoList.add(ColorList.NAME + userName + ColorList.REG + " was " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(banToView.getOldGroups(), ", ") + ColorList.REG + " before they were banned.");
         if (isBannerAvalible) {
             infoList.add(ColorList.NAME + userName + ColorList.REG + " was banned by " + ColorList.NAME + banToView.getBanner());
