@@ -28,6 +28,7 @@ public class BanCommandReactor implements SubCommandHandler {
         this.playerDataHandler = pDataH;
     }
 
+    @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 2) {
             sender.sendMessage(ColorList.ERR + "Please specify a player name and a ban reason");
