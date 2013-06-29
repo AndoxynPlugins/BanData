@@ -3,6 +3,7 @@
     <groupId>net.daboross.bukkitdev.bandata</groupId>
     <artifactId>BanData</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
     <name>BanData</name>
     <repositories>
         <repository>
@@ -27,6 +28,9 @@
             </plugin>
         </plugins>
     </build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
