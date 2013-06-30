@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.daboross.bukkitdev.bandata</groupId>
     <artifactId>BanData</artifactId>
-    <version>1.0</version>
     <packaging>jar</packaging>
+    <version>1.0</version>
     <name>BanData</name>
     <repositories>
         <repository>
