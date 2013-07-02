@@ -6,7 +6,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.logging.Level;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.playerdata.Data;
 import net.daboross.bukkitdev.playerdata.PDPlayerJoinListener;
 import net.daboross.bukkitdev.playerdata.PData;
