@@ -28,7 +28,7 @@ public class BanData extends JavaPlugin {
             if (playerDataPlugin instanceof PlayerData) {
                 playerData = (PlayerData) playerDataPlugin;
             } else {
-                getLogger().log(Level.SEVERE, "PlayerData Not Instance Of Player Data!");
+                getLogger().log(Level.SEVERE, "PlayerData not instanceof PlayerData!");
             }
         }
         if (playerData == null) {
@@ -36,9 +36,9 @@ public class BanData extends JavaPlugin {
             return;
         }
         bdce = new BanDataCommandExecutor(this);
-        PluginCommand bandata = getCommand("bandata:bandata");
+        PluginCommand bandata = getCommand("bd");
         if (bandata == null) {
-            getLogger().log(Level.WARNING, "bandata:bandata command not found! Is another plugin using it?");
+            getLogger().log(Level.WARNING, "/bd command not found! Is another plugin using it?");
         } else {
             bdce.registerCommand(bandata);
         }
