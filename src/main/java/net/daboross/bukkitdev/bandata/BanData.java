@@ -1,7 +1,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.PlayerData;
+import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
@@ -13,7 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BanData extends JavaPlugin {
 
-    private PlayerData playerData;
+    private PlayerDataBukkit playerData;
     private BanDataCommandExecutor bdce;
     private static BanData currentInstance;
     private BanCheckReloader banCheckReloader;
@@ -25,8 +25,8 @@ public class BanData extends JavaPlugin {
         if (playerDataPlugin == null) {
             getLogger().log(Level.SEVERE, "PlayerData Not Found!");
         } else {
-            if (playerDataPlugin instanceof PlayerData) {
-                playerData = (PlayerData) playerDataPlugin;
+            if (playerDataPlugin instanceof PlayerDataBukkit) {
+                playerData = (PlayerDataBukkit) playerDataPlugin;
             } else {
                 getLogger().log(Level.SEVERE, "PlayerData not instanceof PlayerData!");
             }
@@ -42,22 +42,21 @@ public class BanData extends JavaPlugin {
         } else {
             bdce.registerCommand(bandata);
         }
-        playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
+//        playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
-        currentInstance = this;
+        currentInstance = this; 
         bdjl = new BanDataJoinListener(this);
-        playerData.getHandler().addJoinListener(bdjl);
+        Bukkit.getPluginManager().registerEvents(bdjl, this);
         getLogger().log(Level.INFO, "BanData Fully Enabled");
     }
 
     @Override
     public void onDisable() {
-        playerData.getHandler().removeJoinListener(bdjl);
         currentInstance = null;
     }
 
-    protected PlayerData getPlayerData() {
+    protected PlayerDataBukkit getPlayerData() {
         return playerData;
     }
 

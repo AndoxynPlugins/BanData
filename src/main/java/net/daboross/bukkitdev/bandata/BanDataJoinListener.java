@@ -7,18 +7,18 @@ package net.daboross.bukkitdev.bandata;
 
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.PDPlayerJoinListener;
-import net.daboross.bukkitdev.playerdata.PData;
+import net.daboross.bukkitdev.playerdata.PlayerDataImpl;
+import net.daboross.bukkitdev.playerdata.api.events.PlayerDataPlayerJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  *
  * @author daboross
  */
-public class BanDataJoinListener implements PDPlayerJoinListener {
+public class BanDataJoinListener implements Listener {
 
     private final BanData main;
 
@@ -26,8 +26,8 @@ public class BanDataJoinListener implements PDPlayerJoinListener {
         this.main = main;
     }
 
-    public void playerJoinNotify(PlayerJoinEvent pje, final PData pData) {
-        if (pData.isGroup("Banned")) {
+    public void onPlayerDataPlayerJoin(PlayerDataPlayerJoinEvent pdpje) {
+        if (pdpje.getPlayerData().isGroup("Banned")) {
             final Data data = pData.getData("bandata");
             final Player p = pje.getPlayer();
 
@@ -36,7 +36,7 @@ public class BanDataJoinListener implements PDPlayerJoinListener {
                     p.sendMessage(ColorList.REG + "You are currently Banned! You can not build or destroy anything while you are banned.");
                     if (data == null) {
                         pData.addData(new Data("bandata", DataParser.parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}, pData))));
-                        main.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", pData.userName());
+                        main.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", pData.getUsername());
                     } else {
                         BData bData = DataParser.parseFromlist(data);
                         if (bData != null) {

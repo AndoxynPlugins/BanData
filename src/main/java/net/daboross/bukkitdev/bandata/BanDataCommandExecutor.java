@@ -9,9 +9,8 @@ import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.CommandEx
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.PlayerData;
-import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
+import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
+import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,12 +26,12 @@ import org.bukkit.entity.Player;
 public class BanDataCommandExecutor implements SubCommandHandler {
 
     private final CommandExecutorBase commandExecutorBase;
-    private final PlayerDataHandler playerDataHandler;
+    private final PlayerHandler playerDataHandler;
     private final BanData banDataMain;
 
     protected BanDataCommandExecutor(BanData bd) {
         this.banDataMain = bd;
-        PlayerData playerDataMain = banDataMain.getPlayerData();
+        PlayerDataBukkit playerDataMain = banDataMain.getPlayerData();
         this.playerDataHandler = playerDataMain.getHandler();
         commandExecutorBase = new CommandExecutorBase("bandata.help");
         commandExecutorBase.addSubCommand(new SubCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerDataHandler)));
@@ -149,7 +148,7 @@ public class BanDataCommandExecutor implements SubCommandHandler {
         messagesToSend.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban List " + ColorList.TOP_SEPERATOR + "--" + ColorList.TOP + " Page " + ColorList.DATA + pageNumber + ColorList.TOP + "/" + ColorList.DATA + ((banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1)) + ColorList.TOP_SEPERATOR + " --");
         for (int i = (pageNumberReal * 6); i < ((pageNumberReal + 1) * 6) && i < banDataArray.length; i++) {
             BData currentBanData = banDataArray[i];
-            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().userName() + ColorList.REG
+            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().getUsername() + ColorList.REG
                     + " has " + ColorList.DATA + currentBanData.getBans().length + ColorList.REG + ((currentBanData.getBans().length == 1) ? " ban" : " bans")
                     + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
         }

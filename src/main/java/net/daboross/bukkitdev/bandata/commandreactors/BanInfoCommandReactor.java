@@ -3,11 +3,10 @@ package net.daboross.bukkitdev.bandata.commandreactors;
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.bandata.InfoParser;
+import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -17,12 +16,13 @@ import org.bukkit.command.CommandSender;
  */
 public class BanInfoCommandReactor implements SubCommandHandler {
 
-    private final PlayerDataHandler playerDataHandler;
+    private final PlayerHandler playerDataHandler;
 
-    public BanInfoCommandReactor(PlayerDataHandler playerDataHandler) {
+    public BanInfoCommandReactor(PlayerHandler playerDataHandler) {
         this.playerDataHandler = playerDataHandler;
     }
 
+    @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 1) {
             sender.sendMessage(ColorList.ERR + "Please specify a player to get info for");

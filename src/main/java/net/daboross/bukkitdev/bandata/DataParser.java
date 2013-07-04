@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.Data;
 
 /**
  *
@@ -67,16 +66,15 @@ public class DataParser {
         return groupsFound.toArray(new String[groupsFound.size()]);
     }
 
-    public static BData parseFromlist(final Data data) {
+    public static BData parseFromlist(final String[] data) {
         if (data == null) {
             throw new IllegalArgumentException("Data Can't Be Null");
         }
-        String[] strl = data.getData();
         String current = "finding";
         ArrayList<String> currentBan = new ArrayList<String>();
         ArrayList<Ban> banList = new ArrayList<Ban>();
-        for (int i = 0; i < strl.length; i++) {
-            String currentString = strl[i];
+        for (int i = 0; i < data.length; i++) {
+            String currentString = data[i];
             char[] currentCharList = currentString.toCharArray();
             if (current.equalsIgnoreCase("finding")) {
                 if (currentCharList.length > 0) {
@@ -141,22 +139,22 @@ public class DataParser {
                 currentBan.add(currentString);
             }
         }
-        BData bData = new BData(banList.toArray(new Ban[banList.size()]), data.getOwner());
+        BData bData = new BData(banList.toArray(new Ban[banList.size()]));
         return bData;
     }
 
-    protected static BData[] parseAll(final Data[] data) {
-        BData[] returnList = new BData[data.length];
-        for (int i = 0; i < data.length; i++) {
-            returnList[i] = parseFromlist(data[i]);
+    protected static BData[] parseAll(final String[][] datas) {
+        BData[] returnList = new BData[datas.length];
+        for (int i = 0; i < datas.length; i++) {
+            returnList[i] = parseFromlist(datas[i]);
         }
         return returnList;
     }
 
-    protected static BData[] parseAll(final List<Data> data) {
-        BData[] returnList = new BData[data.size()];
-        for (int i = 0; i < data.size(); i++) {
-            returnList[i] = parseFromlist(data.get(i));
+    protected static BData[] parseAll(final List<String[]> datas) {
+        BData[] returnList = new BData[datas.size()];
+        for (int i = 0; i < datas.size(); i++) {
+            returnList[i] = parseFromlist(datas.get(i));
         }
         return returnList;
     }

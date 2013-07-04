@@ -1,6 +1,6 @@
 package net.daboross.bukkitdev.bandata;
 
-import net.daboross.bukkitdev.playerdata.PData;
+import net.daboross.bukkitdev.playerdata.api.PlayerData;
 
 /**
  *
@@ -9,11 +9,9 @@ import net.daboross.bukkitdev.playerdata.PData;
 public class BData {
 
     private Ban[] bans;
-    private PData owner;
 
-    public BData(Ban[] b, PData owner) {
+    public BData(Ban[] b) {
         this.bans = b;
-        this.owner = owner;
     }
 
     public void addBan(Ban b) {
@@ -25,9 +23,5 @@ public class BData {
 
     public Ban[] getBans() {
         return bans;
-    }
-
-    protected PData getOwner() {
-        return owner;
     }
 }
