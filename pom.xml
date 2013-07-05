@@ -3,7 +3,7 @@
     <groupId>net.daboross.bukkitdev.bandata</groupId>
     <artifactId>BanData</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.6</version>
     <name>BanData</name>
     <repositories>
         <repository>
@@ -43,8 +43,8 @@
         <dependency>
             <groupId>net.daboross.bukkitdev.playerdata</groupId>
             <artifactId>PlayerData</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <version>3.2.5</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
