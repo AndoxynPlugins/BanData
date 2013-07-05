@@ -6,10 +6,7 @@ import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.PlayerDataImpl;
-import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
-import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
+import net.daboross.bukkitdev.playerdata.PlayerDataStatic;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import net.milkbowl.vault.permission.Permission;
@@ -38,8 +35,9 @@ public class BanCommandReactor implements SubCommandHandler {
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        if (PlayerDataBukkit.isVaultLoaded()) {
-            if (playerHandler.getPlayerData(subCommandArgs[0]) == null) {
+        if (PlayerDataStatic.isPermissionLoaded()) {
+            PlayerData playerToBan = playerHandler.getPlayerDataPartial(subCommandArgs[0]);
+            if (playerToBan == null) {
                 sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
                 String fullUserName = playerHandler.getFullUsername(subCommandArgs[0]);
                 if (fullUserName != null) {
@@ -47,16 +45,14 @@ public class BanCommandReactor implements SubCommandHandler {
                 }
                 return;
             }
-            Permission p = PlayerDataBukkit.getPermissionHandler();
-            String playerToBanUserName = playerHandler.getFullUsername(subCommandArgs[0]);
-            PlayerData playerToBanPData = playerHandler.getPlayerDataPartial(playerToBanUserName);
+            Permission p = PlayerDataStatic.getPermissionHandler();
             StringBuilder reasonBuilder = new StringBuilder(subCommandArgs[1]);
             for (int i = 2; i < subCommandArgs.length; i++) {
                 reasonBuilder.append(" ").append(subCommandArgs[i]);
             }
             String reason = reasonBuilder.toString();
-            sender.sendMessage(ColorList.REG + "Banning " + ColorList.NAME + playerToBanUserName + ColorList.REG + " for " + ColorList.DATA + reason);
-            String[] oldGroups = p.getPlayerGroups((String)null, playerToBanUserName);
+            sender.sendMessage(ColorList.REG + "Banning " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + " for " + ColorList.DATA + reason);
+            String[] oldGroups = p.getPlayerGroups((String) null, playerToBan.getUsername());
             if (oldGroups == null) {
                 oldGroups = new String[]{"Basic"};
             } else if (oldGroups.length < 2) {
@@ -65,9 +61,9 @@ public class BanCommandReactor implements SubCommandHandler {
                 }
             }
             for (String group : oldGroups) {
-                PlayerDataBukkit.getPermissionHandler().playerRemoveGroup((String) null, playerToBanUserName, group);
+                PlayerDataStatic.getPermissionHandler().playerRemoveGroup((String) null, playerToBan.getUsername(), group);
             }
-            PlayerDataBukkit.getPermissionHandler().playerAddGroup((String) null, playerToBanUserName, "Banned");
+            PlayerDataStatic.getPermissionHandler().playerAddGroup((String) null, playerToBan.getUsername(), "Banned");
             Ban ban;
             if (sender instanceof Player) {
                 Player player = (Player) sender;
@@ -75,21 +71,19 @@ public class BanCommandReactor implements SubCommandHandler {
                 ban = new Ban(player.getName(), reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
             } else {
                 ban = new Ban(reason, oldGroups, System.currentTimeMillis());
-
             }
-            Data rawData = playerHandler.getCustomData(playerToBanUserName, "bandata");
+            String[] rawData = playerToBan.getExtraData("bandata");
             BData banData;
             if (rawData == null) {
                 Ban[] banList = new Ban[]{ban};
-                banData = new BData(banList, playerHandler.getPlayerDataPartial(playerToBanUserName));
+                banData = new BData(banList);
             } else {
                 banData = DataParser.parseFromlist(rawData);
                 banData.addBan(ban);
             }
             String[] newRawBanData = DataParser.parseToList(banData);
-            Data banDataToSet = new Data("bandata", newRawBanData);
-            playerHandler.addCustomData(playerToBanUserName, banDataToSet);
-            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBanUserName + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
+            playerToBan.addExtraData("bandata", newRawBanData);
+            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
         } else {
             sender.sendMessage(ColorList.ERR + "Permission Handler not found");
         }

@@ -8,6 +8,7 @@ import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubComman
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
+import net.daboross.bukkitdev.playerdata.helpers.PermissionsHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -40,11 +41,11 @@ public class BanRecordClearReactor implements SubCommandHandler {
             sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
             return;
         }
-        if (pd.isGroup("banned")) {
+        if (PermissionsHelper.userInGroup(pd.getUsername(), "Banned")) {
             sender.sendMessage(ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is currently banned");
             return;
         }
-        Data data = pd.getData("bandata");
+        String[] data = pd.getExtraData("bandata");
         if (data == null) {
             sender.sendMessage(ColorList.ERR + "No BanData found for " + ColorList.ERR_ARGS + pd.getUsername());
             return;
@@ -56,14 +57,14 @@ public class BanRecordClearReactor implements SubCommandHandler {
         }
         Ban[] bans = banData.getBans();
         if (bans.length == 1) {
-            pd.removeData("bandata");
+            pd.removeExtraData("bandata");
             sender.sendMessage(ColorList.NAME + pd.getUsername() + ColorList.REG + "'s ban record has been cleared");
         } else {
             Ban[] newBans = new Ban[bans.length - 1];
             System.arraycopy(bans, 0, newBans, 0, bans.length - 1);
-            BData newBanData = new BData(newBans, pd);
-            Data newRawData = new Data("bandata", DataParser.parseToList(newBanData));
-            pd.addData(newRawData);
+            BData newBanData = new BData(newBans);
+            String[] newData = DataParser.parseToList(newBanData);
+            pd.addExtraData("bandata", newData);
             sender.sendMessage(ColorList.NAME + pd.getUsername() + ColorList.REG + "'s last ban has been cleared.");
         }
     }

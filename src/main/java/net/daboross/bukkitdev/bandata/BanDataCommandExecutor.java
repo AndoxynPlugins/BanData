@@ -1,6 +1,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
+import java.util.List;
 import net.daboross.bukkitdev.bandata.commandreactors.BanCommandReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.BanInfoCommandReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.BanRecordClearReactor;
@@ -10,7 +11,9 @@ import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
+import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
+import net.daboross.bukkitdev.playerdata.helpers.PermissionsHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -26,21 +29,21 @@ import org.bukkit.entity.Player;
 public class BanDataCommandExecutor implements SubCommandHandler {
 
     private final CommandExecutorBase commandExecutorBase;
-    private final PlayerHandler playerDataHandler;
+    private final PlayerHandler playerHandler;
     private final BanData banDataMain;
 
     protected BanDataCommandExecutor(BanData bd) {
         this.banDataMain = bd;
         PlayerDataBukkit playerDataMain = banDataMain.getPlayerData();
-        this.playerDataHandler = playerDataMain.getHandler();
+        this.playerHandler = playerDataMain.getHandler();
         commandExecutorBase = new CommandExecutorBase("bandata.help");
-        commandExecutorBase.addSubCommand(new SubCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerDataHandler)));
-        commandExecutorBase.addSubCommand(new SubCommand("baninfo", new String[]{"bi", "i"}, true, "bandata.baninfo", new String[]{"Player"}, "Views Ban Info On a Player", new BanInfoCommandReactor(playerDataHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("baninfo", new String[]{"bi", "i"}, true, "bandata.baninfo", new String[]{"Player"}, "Views Ban Info On a Player", new BanInfoCommandReactor(playerHandler)));
         commandExecutorBase.addSubCommand(new SubCommand("bantp", new String[]{"tp", "tpban"}, false, "bandata.bantp", new String[]{"Player"}, "This Command Teleports You To Where Someone Was Banned.", this));
         commandExecutorBase.addSubCommand(new SubCommand("list", new String[]{"l"}, true, "bandata.listbans", new String[]{"PageNumber"}, "This Command Lists All Players Who Have Been Banned and How Many Times They have Been Banned", this));
         commandExecutorBase.addSubCommand(new SubCommand("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase", this));
-        commandExecutorBase.addSubCommand(new SubCommand("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player", new UnBanCommandReactor(playerDataHandler)));
-        commandExecutorBase.addSubCommand(new SubCommand("clearban", true, "bandata.admin.clearban", new String[]{"Player"}, "Clears the last ban off of a Player's ban record.", new BanRecordClearReactor(playerDataHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player", new UnBanCommandReactor(playerHandler)));
+        commandExecutorBase.addSubCommand(new SubCommand("clearban", true, "bandata.admin.clearban", new String[]{"Player"}, "Clears the last ban off of a Player's ban record.", new BanRecordClearReactor(playerHandler)));
     }
 
     protected void registerCommand(PluginCommand command) {
@@ -69,14 +72,15 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        String playerUserName = playerDataHandler.getFullUsername(args[0]);
-        if (playerUserName == null) {
+        PlayerData playerData = playerHandler.getPlayerDataPartial(args[0]);
+        if (playerData == null) {
             sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + args[0] + ColorList.ERR + " not found");
             return;
         }
-        Data rawData = playerDataHandler.getCustomData(playerUserName, "bandata");
+
+        String[] rawData = playerData.getExtraData("bandata");
         if (rawData == null) {
-            sender.sendMessage(ColorList.ERR + "Found no ban data for player " + ColorList.NAME + playerUserName);
+            sender.sendMessage(ColorList.ERR + "Found no ban data for player " + ColorList.NAME + playerData.getUsername());
             return;
         }
         BData banData = DataParser.parseFromlist(rawData);
@@ -85,7 +89,7 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             if (banData.getBans().length < 2) {
                 number = 1;
             } else {
-                sender.sendMessage(InfoParser.getInstance().shortInfo(rawData));
+                sender.sendMessage(InfoParser.shortInfo("bandata", rawData, playerData));
                 sender.sendMessage(ColorList.REG + "Type " + ColorList.CMD + "/" + baseCommandLabel + " " + ColorList.SUBCMD + subCommandLabel + " " + ColorList.ARGS + args[0] + " <1-" + (banData.getBans().length) + ">" + ColorList.REG + " for information on a ban.");
                 return;
             }
@@ -103,20 +107,22 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             sender.sendMessage(ColorList.ERR_ARGS + args[1] + ColorList.ERR + " is not a non-0 positive integer.");
         }
         if (banData.getBans()[number - 1].isConsoleBan()) {
-            sender.sendMessage(ColorList.ERR + "Ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerUserName + ColorList.ERR + " does not have a position associated with it.");
+            sender.sendMessage(ColorList.ERR + "Ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerData.getUsername() + ColorList.ERR + " does not have a position associated with it.");
             return;
         }
         Player player = (Player) sender;
         Ban ban = banData.getBans()[number - 1];
         World world = Bukkit.getServer().getWorld(ban.getWorld());
         if (world == null) {
-            sender.sendMessage(ColorList.ERR + "Could not find the world associated with ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerUserName);
+            sender.sendMessage(ColorList.ERR + "Could not find the world associated with ban number " + ColorList.DATA + number + ColorList.ERR + " for player " + ColorList.NAME + playerData.getUsername());
             return;
         }
-        sender.sendMessage(ColorList.REG + "Teleporting you to the position associated with ban number " + ColorList.DATA + number + ColorList.REG + " for player " + ColorList.NAME + playerUserName);
+        sender.sendMessage(ColorList.REG + "Teleporting you to the position associated with ban number " + ColorList.DATA + number + ColorList.REG + " for player " + ColorList.NAME + playerData.getUsername());
         Location loc = new Location(world, (double) ban.getXPos(), (double) ban.getYPos(), (double) ban.getZPos());
         player.teleport(loc);
-        sender.sendMessage(InfoParser.banInfo(rawData, banData, number - 1));
+        sender.sendMessage(InfoParser.banInfo(banData, playerData, number - 1));
+        sender.sendMessage(ColorList.REG + "To see where " + ColorList.NAME + playerData.getUsername() + ColorList.REG + " was banned type " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.NAME + playerData.getUsername() + " " + ColorList.ARGS + (number - 1));
+
     }
 
     private void runListCommand(CommandSender sender, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
@@ -143,23 +149,24 @@ public class BanDataCommandExecutor implements SubCommandHandler {
             }
         }
         int pageNumberReal = pageNumber - 1;
-        BData[] banDataArray = DataParser.parseAll(playerDataHandler.getAllDatas("bandata"));
+        List<? extends PlayerData> banned = playerHandler.getAllPlayerDatasWithExtraData(("bandata"));
         ArrayList<String> messagesToSend = new ArrayList<String>();
-        messagesToSend.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban List " + ColorList.TOP_SEPERATOR + "--" + ColorList.TOP + " Page " + ColorList.DATA + pageNumber + ColorList.TOP + "/" + ColorList.DATA + ((banDataArray.length / 6) + (banDataArray.length % 6 == 0 ? 0 : 1)) + ColorList.TOP_SEPERATOR + " --");
-        for (int i = (pageNumberReal * 6); i < ((pageNumberReal + 1) * 6) && i < banDataArray.length; i++) {
-            BData currentBanData = banDataArray[i];
-            messagesToSend.add(ColorList.NAME + currentBanData.getOwner().getUsername() + ColorList.REG
-                    + " has " + ColorList.DATA + currentBanData.getBans().length + ColorList.REG + ((currentBanData.getBans().length == 1) ? " ban" : " bans")
-                    + ", and " + (isBanned(currentBanData) ? "is currently banned" : "is not currently banned") + ".");
+        messagesToSend.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban List " + ColorList.TOP_SEPERATOR + "--" + ColorList.TOP + " Page " + ColorList.DATA + pageNumber + ColorList.TOP + "/" + ColorList.DATA + ((banned.size() / 6) + (banned.size() % 6 == 0 ? 0 : 1)) + ColorList.TOP_SEPERATOR + " --");
+        for (int i = (pageNumberReal * 6); i < ((pageNumberReal + 1) * 6) && i < banned.size(); i++) {
+            PlayerData current = banned.get(i);
+            BData bans = DataParser.parseFromlist(current.getExtraData("bandata"));
+            messagesToSend.add(ColorList.NAME + current.getUsername() + ColorList.REG
+                    + " has " + ColorList.DATA + bans.getBans().length + ColorList.REG + ((bans.getBans().length == 1) ? " ban" : " bans")
+                    + ", and " + (isBanned(current) ? "is currently banned" : "is not currently banned") + ".");
         }
-        if (pageNumber < (banDataArray.length / 6.0)) {
+        if (pageNumber < (banned.size() / 6.0)) {
             messagesToSend.add(ColorList.REG + "To view the next page type " + ColorList.CMD + "/" + baseCommandLabel + ColorList.SUBCMD + " " + subCommandLabel + ColorList.ARGS + " " + (pageNumber + 1));
         }
         sender.sendMessage(messagesToSend.toArray(new String[messagesToSend.size()]));
     }
 
-    private boolean isBanned(BData bd) {
-        return bd.getOwner().isGroup("banned");
+    private boolean isBanned(PlayerData playerData) {
+        return PermissionsHelper.userInGroup(playerData.getUsername(), "Banned");
     }
 
     private void runBanCheckCommand() {

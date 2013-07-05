@@ -1,7 +1,5 @@
 package net.daboross.bukkitdev.bandata;
 
-import net.daboross.bukkitdev.playerdata.api.PlayerData;
-
 /**
  *
  * @author daboross

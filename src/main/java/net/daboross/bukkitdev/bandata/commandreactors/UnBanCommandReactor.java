@@ -9,10 +9,8 @@ import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.PlayerDataImpl;
 import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
-import net.daboross.bukkitdev.playerdata.PlayerDataHandler;
+import net.daboross.bukkitdev.playerdata.PlayerDataStatic;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import net.milkbowl.vault.permission.Permission;
@@ -44,19 +42,19 @@ public class UnBanCommandReactor implements SubCommandHandler {
             sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        PlayerData pData = playerHandler.getPlayerDataPartial(subCommandArgs[0]);
-        if (pData == null) {
+        PlayerData pd = playerHandler.getPlayerDataPartial(subCommandArgs[0]);
+        if (pd == null) {
             sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
             return;
         }
-        Permission p = PlayerDataBukkit.getPermissionHandler();
-        if (!p.playerInGroup((String) null, pData.getUsername(), "Banned")) {
-            sender.sendMessage(ColorList.ERR_ARGS + pData.getUsername() + ColorList.ERR + " is not currently banned");
+        Permission p = PlayerDataStatic.getPermissionHandler();
+        if (!p.playerInGroup((String) null, pd.getUsername(), "Banned")) {
+            sender.sendMessage(ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is not currently banned");
             return;
         }
-        Data data = pData.getData("bandata");
+        String[] data = pd.getExtraData("bandata");
         if (data == null) {
-            sender.sendMessage(ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pData.getUsername());
+            sender.sendMessage(ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pd.getUsername());
             return;
         }
         BData banData = DataParser.parseFromlist(data);
@@ -87,24 +85,24 @@ public class UnBanCommandReactor implements SubCommandHandler {
             sender.sendMessage(ColorList.ERR + "Error parsing BanData. No previous groups found");
             return;
         }
-        if (!(PlayerDataBukkit.isVaultLoaded())) {
+        if (!(PlayerDataStatic.isPermissionLoaded())) {
             sender.sendMessage(ColorList.ERR + "Vault permission handler not found");
         }
-        List<String> rawData;
-        if (pData.hasData("rankrecord")) {
-            rawData = new ArrayList<String>(Arrays.asList(pData.getData("rankrecord").getData()));
+        List<String> rankRecord;
+        if (pd.hasExtraData("rankrecord")) {
+            rankRecord = new ArrayList<String>(Arrays.asList(pd.getExtraData("rankrecord")));
         } else {
-            rawData = new ArrayList<String>();
+            rankRecord = new ArrayList<String>();
         }
-        PlayerDataBukkit.getPermissionHandler().playerRemoveGroup((String) null, pData.getUsername(), "Banned");
+        PlayerDataStatic.getPermissionHandler().playerRemoveGroup((String) null, pd.getUsername(), "Banned");
         for (String group : permissionGroupsToSet) {
-            PlayerDataBukkit.getPermissionHandler().playerAddGroup((String) null, pData.getUsername(), group);
+            PlayerDataStatic.getPermissionHandler().playerAddGroup((String) null, pd.getUsername(), group);
         }
-        rawData.add("SET " + sender.getName() + " " + Arrays.toString(permissionGroupsToSet) + " " + System.currentTimeMillis());
-        Data finalData = new Data("rankrecord", rawData.toArray(new String[rawData.size()]));
-        pData.addData(finalData);
-        Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + pData.getUsername() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
-        sender.sendMessage(ColorList.NAME + pData.getUsername() + " has been set to: " + getString(permissionGroupsToSet));
+        rankRecord.add("SET " + sender.getName() + " " + Arrays.toString(permissionGroupsToSet) + " " + System.currentTimeMillis());
+        String[] finalRankRecord = rankRecord.toArray(new String[rankRecord.size()]);
+        pd.addExtraData("rankrecord", finalRankRecord);
+        Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + pd.getUsername() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
+        sender.sendMessage(ColorList.NAME + pd.getUsername() + " has been set to: " + getString(permissionGroupsToSet));
     }
 
     private String getString(String[] strings) {

@@ -1,42 +1,27 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.playerdata.Data;
-import net.daboross.bukkitdev.playerdata.api.DataDisplayParser;
-import net.daboross.bukkitdev.playerdata.PlayerDataImpl;
-import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
+import net.daboross.bukkitdev.playerdata.api.PlayerData;
+import net.daboross.bukkitdev.playerdata.helpers.DateHelper;
+import net.daboross.bukkitdev.playerdata.helpers.PermissionsHelper;
 
 /**
  *
  * @author daboross
  */
-public class InfoParser implements DataDisplayParser {
+public class InfoParser {
 
-    private static InfoParser instance;
-    private static final Object INSTANCE_LOCK = new Object();
-
-    private InfoParser() {
-    }
-
-    /**
-     *
-     * @param rawData
-     * @return
-     */
-    @Override
-    public String[] shortInfo(Data rawData) {
-        if (rawData == null) {
+    public static String[] shortInfo(String dataName, String[] data, PlayerData owner) {
+        if (data == null) {
             return new String[0];
         }
-        if (!rawData.getName().equalsIgnoreCase("bandata")) {
+        if (!dataName.equalsIgnoreCase("bandata")) {
             return new String[]{ColorList.ERR + "Illegal BanData"};
         }
-        BData banData = DataParser.parseFromlist(rawData);
-        PlayerDataImpl owner = rawData.getOwner();
+        BData banData = DataParser.parseFromlist(data);
         return new String[]{
             ColorList.REG + "Player" + ColorList.NAME + (owner == null ? "" : " " + owner.getUsername())
             + ColorList.REG + " has " + ColorList.DATA + banData.getBans().length
@@ -46,39 +31,12 @@ public class InfoParser implements DataDisplayParser {
     /**
      *
      * @param rawData
-     * @return
-     */
-    @Override
-    public String[] longInfo(Data rawData) {
-        if (rawData == null) {
-            return new String[0];
-        }
-        if (!rawData.getName().equalsIgnoreCase("bandata")) {
-            return new String[]{ColorList.ERR + "Illegal BanData"};
-        }
-        BData banData = DataParser.parseFromlist(rawData);
-        PlayerDataImpl owner = rawData.getOwner();
-        String userName;
-        if (owner != null) {
-            userName = " " + owner.getUsername();
-        } else {
-            userName = "";
-        }
-        ArrayList<String> returnList = new ArrayList<String>();
-        returnList.add(ColorList.REG + "BanData info from last ban of" + ColorList.NAME + userName);
-        returnList.addAll(Arrays.asList(banInfo(rawData, banData, -1)));
-        return returnList.toArray(new String[returnList.size()]);
-    }
-
-    /**
-     *
-     * @param rawData
      * @param data
      * @param banNumber
      * @return
      */
-    public static String[] banInfo(Data rawData, BData data, int banNumber) {
-        if (rawData == null || data == null) {
+    public static String[] banInfo(BData data, PlayerData owner, int banNumber) {
+        if (owner == null || data == null) {
             throw new IllegalArgumentException("Can't Be Null!");
         }
         if (data.getBans().length < 1) {
@@ -91,35 +49,20 @@ public class InfoParser implements DataDisplayParser {
             banNumber = data.getBans().length - 1;
         }
         Ban banToView = data.getBans()[banNumber];
-        PlayerDataImpl owner = rawData.getOwner();
-        String userName;
-        if (owner != null) {
-            userName = owner.getUsername();
-        } else {
-            return new String[0];
-        }
+        String ownerName = owner.getUsername();
         boolean isBannerAvalible = !"Unknown".equalsIgnoreCase(banToView.getBanner());
         List<String> infoList = new ArrayList<String>(7);
-        infoList.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban " + ColorList.DATA + (banNumber + 1) + ColorList.TOP + " of " + ColorList.NAME + userName + ColorList.TOP_SEPERATOR + " --");
-        infoList.add(ColorList.REG + "Ban occurred " + ColorList.DATA + PlayerDataBukkit.getFormattedDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.REG + " ago.");
+        infoList.add(ColorList.TOP_SEPERATOR + " -- " + ColorList.TOP + "Ban " + ColorList.DATA + (banNumber + 1) + ColorList.TOP + " of " + ColorList.NAME + ownerName + ColorList.TOP_SEPERATOR + " --");
+        infoList.add(ColorList.REG + "Ban occurred " + ColorList.DATA + DateHelper.getFormattedRelativeDate(System.currentTimeMillis() - banToView.getTimeStamp()) + ColorList.REG + " ago.");
         infoList.add(ColorList.REG + "Ban was for " + ColorList.DATA + banToView.getReason());
-        infoList.add(ColorList.NAME + userName + ColorList.REG + (owner.isGroup("Banned") ? " is still banned" : " is not currently banned"));
-        infoList.add(ColorList.NAME + userName + ColorList.REG + " was " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(banToView.getOldGroups(), ", ") + ColorList.REG + " before they were banned.");
+        infoList.add(ColorList.NAME + ownerName + ColorList.REG + (PermissionsHelper.userInGroup(ownerName, "Banned") ? " is still banned" : " is not currently banned"));
+        infoList.add(ColorList.NAME + ownerName + ColorList.REG + " was " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(banToView.getOldGroups(), ", ") + ColorList.REG + " before they were banned.");
         if (isBannerAvalible) {
-            infoList.add(ColorList.NAME + userName + ColorList.REG + " was banned by " + ColorList.NAME + banToView.getBanner());
+            infoList.add(ColorList.NAME + ownerName + ColorList.REG + " was banned by " + ColorList.NAME + banToView.getBanner());
         }
         if (!banToView.isConsoleBan()) {
-            infoList.add(ColorList.REG + "To see where " + ColorList.NAME + userName + ColorList.REG + " was banned type " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.NAME + userName + " " + ColorList.ARGS + banNumber);
+            infoList.add(ColorList.REG + "To see where " + ColorList.NAME + ownerName + ColorList.REG + " was banned type " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.NAME + ownerName + " " + ColorList.ARGS + banNumber);
         }
         return infoList.toArray(new String[infoList.size()]);
-    }
-
-    public static InfoParser getInstance() {
-        synchronized (INSTANCE_LOCK) {
-            if (instance == null) {
-                instance = new InfoParser();
-            }
-        }
-        return instance;
     }
 }
