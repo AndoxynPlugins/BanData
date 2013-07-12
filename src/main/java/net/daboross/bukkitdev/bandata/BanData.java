@@ -61,7 +61,7 @@ public class BanData extends JavaPlugin {
 //        playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
-        currentInstance = this; 
+        currentInstance = this;
         bdjl = new BanDataJoinListener(this);
         Bukkit.getPluginManager().registerEvents(bdjl, this);
         getLogger().log(Level.INFO, "BanData Fully Enabled");
