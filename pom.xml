@@ -3,7 +3,7 @@
     <groupId>net.daboross.bukkitdev.bandata</groupId>
     <artifactId>BanData</artifactId>
     <packaging>jar</packaging>
-    <version>1.6</version>
+    <version>1.6.1</version>
     <name>BanData</name>
     <repositories>
         <repository>
@@ -14,9 +14,22 @@
             <id>vault-repo</id>
             <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
         </repository>
+        <repository>
+            <id>mcstats-repo</id>
+            <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
     </repositories>
     <build>
-        <finalName>BanData</finalName>
+        <finalName>${project.name}</finalName>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -27,6 +40,37 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.mcstats.bukkit:metrics-lite</include>
+                                    <include>net.daboross.bukkitdev:CommandExecutorBase</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>net.daboross.bukkitdev.rankdisplay.libraries.mcstats</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.daboross.bukkitdev.commandexecutorbase</pattern>
+                                    <shadedPattern>net.daboross.bukkitdev.timedblockreplace.libraries.commandexecutorbase</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <properties>
@@ -36,20 +80,26 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.1-R0.1-SNAPSHOT</version>
+            <version>1.6.2-R0.1-SNAPSHOT</version>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.daboross.bukkitdev.playerdata</groupId>
-            <artifactId>PlayerData</artifactId>
-            <version>3.2.8</version>
-            <type>jar</type>
+            <groupId>net.daboross.bukkitdev</groupId>
+            <artifactId>PlayerDataAPI</artifactId>
+            <version>4.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
             <version>1.2.26-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.daboross.bukkitdev</groupId>
+            <artifactId>CommandExecutorBase</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

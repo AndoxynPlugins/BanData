@@ -19,11 +19,11 @@ package net.daboross.bukkitdev.bandata.commandreactors;
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.bandata.InfoParser;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

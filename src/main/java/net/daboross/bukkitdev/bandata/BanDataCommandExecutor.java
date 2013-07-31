@@ -22,14 +22,14 @@ import net.daboross.bukkitdev.bandata.commandreactors.BanCommandReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.BanInfoCommandReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.BanRecordClearReactor;
 import net.daboross.bukkitdev.bandata.commandreactors.UnBanCommandReactor;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.CommandExecutorBase;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.SubCommandHandler;
-import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
+import net.daboross.bukkitdev.playerdata.api.PermissionsHelper;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
+import net.daboross.bukkitdev.playerdata.api.PlayerDataPlugin;
 import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
-import net.daboross.bukkitdev.playerdata.helpers.PermissionsHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -46,12 +46,12 @@ public class BanDataCommandExecutor implements SubCommandHandler {
 
     private final CommandExecutorBase commandExecutorBase;
     private final PlayerHandler playerHandler;
-    private final BanData banDataMain;
+    private final BanDataPlugin banDataMain;
 
-    protected BanDataCommandExecutor(BanData bd) {
+    protected BanDataCommandExecutor(BanDataPlugin bd) {
         this.banDataMain = bd;
-        PlayerDataBukkit playerDataMain = banDataMain.getPlayerData();
-        this.playerHandler = playerDataMain.getHandler();
+        PlayerDataPlugin playerDataPlugin = banDataMain.getPlayerData();
+        this.playerHandler = playerDataPlugin.getHandler();
         commandExecutorBase = new CommandExecutorBase("bandata.help");
         commandExecutorBase.addSubCommand(new SubCommand("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.", new BanCommandReactor(playerHandler)));
         commandExecutorBase.addSubCommand(new SubCommand("baninfo", new String[]{"bi", "i"}, true, "bandata.baninfo", new String[]{"Player"}, "Views Ban Info On a Player", new BanInfoCommandReactor(playerHandler)));

@@ -17,9 +17,9 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.libraries.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.playerdata.api.PermissionsHelper;
 import net.daboross.bukkitdev.playerdata.api.events.PlayerDataPlayerJoinEvent;
-import net.daboross.bukkitdev.playerdata.helpers.PermissionsHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -30,9 +30,9 @@ import org.bukkit.event.Listener;
  */
 public class BanDataJoinListener implements Listener {
 
-    private final BanData main;
+    private final BanDataPlugin main;
 
-    public BanDataJoinListener(BanData main) {
+    public BanDataJoinListener(BanDataPlugin main) {
         this.main = main;
     }
 

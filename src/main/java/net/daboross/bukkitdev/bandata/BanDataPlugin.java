@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.bandata;
 
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.PlayerDataBukkit;
+import net.daboross.bukkitdev.playerdata.api.PlayerDataPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
@@ -27,27 +27,27 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author daboross
  */
-public class BanData extends JavaPlugin {
+public class BanDataPlugin extends JavaPlugin {
 
-    private PlayerDataBukkit playerData;
+    private PlayerDataPlugin playerDataPlugin;
     private BanDataCommandExecutor bdce;
-    private static BanData currentInstance;
+    private static BanDataPlugin currentInstance;
     private BanCheckReloader banCheckReloader;
     private BanDataJoinListener bdjl;
 
     @Override
     public void onEnable() {
-        Plugin playerDataPlugin = Bukkit.getPluginManager().getPlugin("PlayerData");
-        if (playerDataPlugin == null) {
+        Plugin pluginPlayerData = Bukkit.getPluginManager().getPlugin("PlayerData");
+        if (pluginPlayerData == null) {
             getLogger().log(Level.SEVERE, "PlayerData Not Found!");
         } else {
-            if (playerDataPlugin instanceof PlayerDataBukkit) {
-                playerData = (PlayerDataBukkit) playerDataPlugin;
+            if (pluginPlayerData instanceof PlayerDataPlugin) {
+                playerDataPlugin = (PlayerDataPlugin) pluginPlayerData;
             } else {
                 getLogger().log(Level.SEVERE, "PlayerData not instanceof PlayerData!");
             }
         }
-        if (playerData == null) {
+        if (playerDataPlugin == null) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -72,15 +72,15 @@ public class BanData extends JavaPlugin {
         currentInstance = null;
     }
 
-    protected PlayerDataBukkit getPlayerData() {
-        return playerData;
+    protected PlayerDataPlugin getPlayerData() {
+        return playerDataPlugin;
     }
 
     protected BanCheckReloader getBanCheckReloader() {
         return banCheckReloader;
     }
 
-    protected static BanData getCurrentInstance() {
+    protected static BanDataPlugin getCurrentInstance() {
         return currentInstance;
     }
 }

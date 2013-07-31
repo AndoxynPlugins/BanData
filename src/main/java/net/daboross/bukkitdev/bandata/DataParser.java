@@ -97,7 +97,7 @@ public class DataParser {
                     if (currentCharList[currentCharList.length - 1] == ':') {
                         current = currentString.substring(0, (currentString.length() - 1)).toLowerCase(Locale.ENGLISH);
                     } else {
-                        BanData.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                         return null;
                     }
                 }
@@ -135,7 +135,7 @@ public class DataParser {
                         }
                         banList.add(b);
                     } else {
-                        BanData.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                     }
                 } else if (current.equalsIgnoreCase("cban")) {
                     if (currentBan.size() == 3) {
@@ -146,7 +146,7 @@ public class DataParser {
                         banList.add(b);
 
                     } else {
-                        BanData.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                     }
                 }
                 currentBan.clear();

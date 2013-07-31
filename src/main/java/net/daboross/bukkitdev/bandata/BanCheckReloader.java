@@ -18,8 +18,8 @@ package net.daboross.bukkitdev.bandata;
 
 import java.util.List;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.playerdata.PlayerDataStatic;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
+import net.daboross.bukkitdev.playerdata.api.PlayerDataStatic;
 import net.milkbowl.vault.permission.Permission;
 
 /**
@@ -28,9 +28,9 @@ import net.milkbowl.vault.permission.Permission;
  */
 public class BanCheckReloader {
 
-    private BanData main;
+    private BanDataPlugin main;
 
-    public BanCheckReloader(BanData bd) {
+    public BanCheckReloader(BanDataPlugin bd) {
         main = bd;
     }
 
