@@ -16,12 +16,14 @@
  */
 package net.daboross.bukkitdev.bandata;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.playerdata.api.PlayerDataPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 /**
  *
@@ -58,12 +60,20 @@ public class BanDataPlugin extends JavaPlugin {
         } else {
             bdce.registerCommand(bandata);
         }
-//        playerData.getHandler().addCustomDataParsing("bandata", InfoParser.getInstance());
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
         currentInstance = this;
         bdjl = new BanDataJoinListener(this);
         Bukkit.getPluginManager().registerEvents(bdjl, this);
+        MetricsLite metrics = null;
+        try {
+            metrics = new MetricsLite(this);
+        } catch (IOException ex) {
+            getLogger().warning("Unable to create Metrics");
+        }
+        if (metrics != null) {
+            metrics.start();
+        }
         getLogger().log(Level.INFO, "BanData Fully Enabled");
     }
 

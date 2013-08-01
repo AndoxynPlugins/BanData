@@ -68,7 +68,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>net.daboross.bukkitdev.commandexecutorbase</pattern>
-                                    <shadedPattern>net.daboross.bukkitdev.timedblockreplace.libraries.commandexecutorbase</shadedPattern>
+                                    <shadedPattern>net.daboross.bukkitdev.bandata.libraries.commandexecutorbase</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -104,6 +104,12 @@
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>CommandExecutorBase</artifactId>
             <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mcstats.bukkit</groupId>
+            <artifactId>metrics-lite</artifactId>
+            <version>R7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
