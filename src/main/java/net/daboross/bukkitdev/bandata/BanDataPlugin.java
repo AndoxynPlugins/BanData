@@ -69,7 +69,7 @@ public class BanDataPlugin extends JavaPlugin {
         try {
             metrics = new MetricsLite(this);
         } catch (IOException ex) {
-            getLogger().warning("Unable to create Metrics");
+            getLogger().log(Level.WARNING, "Unable to create Metrics", ex);
         }
         if (metrics != null) {
             metrics.start();
