@@ -1,5 +1,5 @@
 name: ${project.name}
-main: net.daboross.bukkitdev.bandata.BanDataplugin
+main: net.daboross.bukkitdev.bandata.BanDataPlugin
 version: ${project.version}
 author: Dabo Ross
 description: This plugin is an extension of PlayerData that records BanData
