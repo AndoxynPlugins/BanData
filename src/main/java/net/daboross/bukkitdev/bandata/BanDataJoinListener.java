@@ -30,10 +30,10 @@ import org.bukkit.event.Listener;
  */
 public class BanDataJoinListener implements Listener {
 
-    private final BanDataPlugin main;
+    private final BanDataPlugin plugin;
 
     public BanDataJoinListener(BanDataPlugin main) {
-        this.main = main;
+        this.plugin = main;
     }
 
     public void onPlayerDataPlayerJoin(PlayerDataPlayerJoinEvent pdpje) {
@@ -42,9 +42,9 @@ public class BanDataJoinListener implements Listener {
             final Player p = pdpje.getPlayer();
             Runnable r;
             if (data == null) {
-                String[] newData = DataParser.parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}));
+                String[] newData = plugin.getParser().parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}));
                 pdpje.getPlayerData().addExtraData("bandata", newData);
-                main.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", p.getName());
+                plugin.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", p.getName());
                 r = new Runnable() {
                     @Override
                     public void run() {
@@ -53,7 +53,7 @@ public class BanDataJoinListener implements Listener {
                     }
                 };
             } else {
-                final BData bd = DataParser.parseFromlist(data);
+                final BData bd = plugin.getParser().parseFromlist(data);
                 r = new Runnable() {
                     @Override
                     public void run() {
@@ -70,7 +70,7 @@ public class BanDataJoinListener implements Listener {
                     }
                 };
             }
-            Bukkit.getScheduler().runTaskLater(main, r, 15);
+            Bukkit.getScheduler().runTaskLater(plugin, r, 15);
         }
     }
 }

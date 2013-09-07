@@ -30,14 +30,20 @@ import net.daboross.bukkitdev.playerdata.api.PlayerData;
  */
 public class InfoParser {
 
-    public static String[] shortInfo(String dataName, String[] data, PlayerData owner) {
+    private final BanDataPlugin plugin;
+
+    public InfoParser(BanDataPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public String[] shortInfo(String dataName, String[] data, PlayerData owner) {
         if (data == null) {
             return new String[0];
         }
         if (!dataName.equalsIgnoreCase("bandata")) {
             return new String[]{ColorList.ERR + "Illegal BanData"};
         }
-        BData banData = DataParser.parseFromlist(data);
+        BData banData = plugin.getParser().parseFromlist(data);
         return new String[]{
             ColorList.REG + "Player" + ColorList.NAME + (owner == null ? "" : " " + owner.getUsername())
             + ColorList.REG + " has " + ColorList.DATA + banData.getBans().length
@@ -51,7 +57,7 @@ public class InfoParser {
      * @param banNumber
      * @return
      */
-    public static String[] banInfo(BData data, PlayerData owner, int banNumber) {
+    public String[] banInfo(BData data, PlayerData owner, int banNumber) {
         if (owner == null || data == null) {
             throw new IllegalArgumentException("Can't Be Null!");
         }

@@ -28,10 +28,10 @@ import net.milkbowl.vault.permission.Permission;
  */
 public class BanCheckReloader {
 
-    private BanDataPlugin main;
+    private BanDataPlugin plugin;
 
     public BanCheckReloader(BanDataPlugin bd) {
-        main = bd;
+        plugin = bd;
     }
 
     /**
@@ -39,14 +39,14 @@ public class BanCheckReloader {
      * is banned.
      */
     public void goThrough() {
-        List<? extends PlayerData> playerDatas = main.getPlayerData().getHandler().getAllPlayerDatas();
+        List<? extends PlayerData> playerDatas = plugin.getPlayerData().getHandler().getAllPlayerDatas();
         Permission permissionHandler = PlayerDataStatic.getPermissionHandler();
         for (int i = 0; i < playerDatas.size(); i++) {
             PlayerData current = playerDatas.get(i);
             if (permissionHandler.playerInGroup((String) null, current.getUsername(), "Banned")) {
                 if (!current.hasExtraData("bandata")) {
-                    current.addExtraData("bandata", DataParser.parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())})));
-                    main.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", current.getUsername());
+                    current.addExtraData("bandata", plugin.getParser().parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())})));
+                    plugin.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", current.getUsername());
                 }
             }
         }

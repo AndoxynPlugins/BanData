@@ -18,13 +18,11 @@ package net.daboross.bukkitdev.bandata.commandreactors;
 
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
-import net.daboross.bukkitdev.bandata.DataParser;
+import net.daboross.bukkitdev.bandata.BanDataPlugin;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerDataStatic;
-import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,29 +34,30 @@ import org.bukkit.entity.Player;
  *
  * @author daboross
  */
-public class BanCommandReactor implements SubCommandHandler {
+public class BanCommand extends SubCommand {
 
-    private final PlayerHandler playerHandler;
+    private final BanDataPlugin plugin;
 
-    public BanCommandReactor(PlayerHandler ph) {
-        this.playerHandler = ph;
+    public BanCommand(BanDataPlugin plugin) {
+        super("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.");
+        this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 2) {
             sender.sendMessage(ColorList.ERR + "Please specify a player name and a ban reason");
-            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
+            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (PlayerDataStatic.isPermissionLoaded()) {
-            PlayerData playerToBan = playerHandler.getPlayerDataPartial(subCommandArgs[0]);
+            PlayerData playerToBan = plugin.getPlayerData().getHandler().getPlayerDataPartial(subCommandArgs[0]);
             if (playerToBan == null) {
                 sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
-                String fullUserName = playerHandler.getFullUsername(subCommandArgs[0]);
-                if (fullUserName != null) {
-                    sender.sendMessage(ColorList.REG + "Did you mean " + ColorList.NAME + fullUserName + ColorList.REG + "?");
-                }
+                return;
+            } else if (playerToBan.getUsername().equalsIgnoreCase(subCommandArgs[0])) {
+                sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
+                sender.sendMessage(ColorList.REG + "Did you mean " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + "?");
                 return;
             }
             Permission p = PlayerDataStatic.getPermissionHandler();
@@ -94,14 +93,14 @@ public class BanCommandReactor implements SubCommandHandler {
                 Ban[] banList = new Ban[]{ban};
                 banData = new BData(banList);
             } else {
-                banData = DataParser.parseFromlist(rawData);
+                banData = plugin.getParser().parseFromlist(rawData);
                 banData.addBan(ban);
             }
-            String[] newRawBanData = DataParser.parseToList(banData);
+            String[] newRawBanData = plugin.getParser().parseToList(banData);
             playerToBan.addExtraData("bandata", newRawBanData);
             Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
         } else {
-            sender.sendMessage(ColorList.ERR + "Permission Handler not found");
+            sender.sendMessage(ColorList.ERR + "Permission handler not found");
         }
     }
 }

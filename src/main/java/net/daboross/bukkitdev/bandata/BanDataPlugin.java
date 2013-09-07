@@ -32,10 +32,11 @@ import org.mcstats.MetricsLite;
 public class BanDataPlugin extends JavaPlugin {
 
     private PlayerDataPlugin playerDataPlugin;
-    private BanDataCommandExecutor bdce;
-    private static BanDataPlugin currentInstance;
+    private BanDataCommandMain bdce;
     private BanCheckReloader banCheckReloader;
     private BanDataJoinListener bdjl;
+    private DataParser parser;
+    private InfoParser info;
 
     @Override
     public void onEnable() {
@@ -53,7 +54,9 @@ public class BanDataPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        bdce = new BanDataCommandExecutor(this);
+        parser = new DataParser(this);
+        info = new InfoParser(this);
+        bdce = new BanDataCommandMain(this);
         PluginCommand bandata = getCommand("bd");
         if (bandata == null) {
             getLogger().log(Level.WARNING, "/bd command not found! Is another plugin using it?");
@@ -62,7 +65,6 @@ public class BanDataPlugin extends JavaPlugin {
         }
         banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
-        currentInstance = this;
         bdjl = new BanDataJoinListener(this);
         Bukkit.getPluginManager().registerEvents(bdjl, this);
         MetricsLite metrics = null;
@@ -79,18 +81,21 @@ public class BanDataPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        currentInstance = null;
     }
 
-    protected PlayerDataPlugin getPlayerData() {
+    public PlayerDataPlugin getPlayerData() {
         return playerDataPlugin;
     }
 
-    protected BanCheckReloader getBanCheckReloader() {
+    public BanCheckReloader getBanCheckReloader() {
         return banCheckReloader;
     }
 
-    protected static BanDataPlugin getCurrentInstance() {
-        return currentInstance;
+    public DataParser getParser() {
+        return parser;
+    }
+
+    public InfoParser getInfo() {
+        return info;
     }
 }

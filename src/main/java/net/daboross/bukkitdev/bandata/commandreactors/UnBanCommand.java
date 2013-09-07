@@ -21,13 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
-import net.daboross.bukkitdev.bandata.DataParser;
+import net.daboross.bukkitdev.bandata.BanDataPlugin;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.commandexecutorbase.SubCommandHandler;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerDataStatic;
-import net.daboross.bukkitdev.playerdata.api.PlayerHandler;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -37,27 +35,28 @@ import org.bukkit.command.CommandSender;
  *
  * @author daboross
  */
-public class UnBanCommandReactor implements SubCommandHandler {
+public class UnBanCommand extends SubCommand {
 
-    private final PlayerHandler playerHandler;
+    private final BanDataPlugin plugin;
 
-    public UnBanCommandReactor(PlayerHandler playerHandler) {
-        this.playerHandler = playerHandler;
+    public UnBanCommand(BanDataPlugin plugin) {
+        super("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player");
+        this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length < 1) {
             sender.sendMessage(ColorList.ERR + "Please specify a player.");
-            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
+            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
         if (subCommandArgs.length > 1) {
             sender.sendMessage(ColorList.ERR + "To many arguments");
-            sender.sendMessage(subCommand.getHelpMessage(baseCommandLabel, subCommandLabel));
+            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        PlayerData pd = playerHandler.getPlayerDataPartial(subCommandArgs[0]);
+        PlayerData pd = plugin.getPlayerData().getHandler().getPlayerDataPartial(subCommandArgs[0]);
         if (pd == null) {
             sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
             return;
@@ -72,7 +71,7 @@ public class UnBanCommandReactor implements SubCommandHandler {
             sender.sendMessage(ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pd.getUsername());
             return;
         }
-        BData banData = DataParser.parseFromlist(data);
+        BData banData = plugin.getParser().parseFromlist(data);
         if (banData == null) {
             sender.sendMessage(ColorList.ERR + "Error parsing BanData");
             return;

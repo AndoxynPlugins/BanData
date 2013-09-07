@@ -27,7 +27,13 @@ import java.util.logging.Level;
  */
 public class DataParser {
 
-    public static String[] parseToList(final BData bd) {
+    private final BanDataPlugin plugin;
+
+    public DataParser(BanDataPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public String[] parseToList(final BData bd) {
         List<String> returnList = new ArrayList<String>();
         for (Ban b : bd.getBans()) {
             if (b.isConsoleBan()) {
@@ -52,7 +58,7 @@ public class DataParser {
         return returnList.toArray(new String[returnList.size()]);
     }
 
-    private static String groupToString(final String[] groups) {
+    private String groupToString(final String[] groups) {
         StringBuilder returnBuilder = new StringBuilder();
         for (String str : groups) {
             returnBuilder.append(",").append(str);
@@ -60,7 +66,7 @@ public class DataParser {
         return returnBuilder.toString();
     }
 
-    private static String[] stringToGroup(final String groups) {
+    private String[] stringToGroup(final String groups) {
         char[] gC = groups.toCharArray();
         ArrayList<String> groupsFound = new ArrayList<String>();
         String currentGroup = "";
@@ -82,7 +88,7 @@ public class DataParser {
         return groupsFound.toArray(new String[groupsFound.size()]);
     }
 
-    public static BData parseFromlist(final String[] data) {
+    public BData parseFromlist(final String[] data) {
         if (data == null) {
             throw new IllegalArgumentException("Data Can't Be Null");
         }
@@ -97,7 +103,7 @@ public class DataParser {
                     if (currentCharList[currentCharList.length - 1] == ':') {
                         current = currentString.substring(0, (currentString.length() - 1)).toLowerCase(Locale.ENGLISH);
                     } else {
-                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        plugin.getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                         return null;
                     }
                 }
@@ -135,7 +141,7 @@ public class DataParser {
                         }
                         banList.add(b);
                     } else {
-                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        plugin.getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                     }
                 } else if (current.equalsIgnoreCase("cban")) {
                     if (currentBan.size() == 3) {
@@ -146,7 +152,7 @@ public class DataParser {
                         banList.add(b);
 
                     } else {
-                        BanDataPlugin.getCurrentInstance().getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
+                        plugin.getLogger().log(Level.SEVERE, "Error Parsing Player Data!");
                     }
                 }
                 currentBan.clear();
@@ -159,7 +165,7 @@ public class DataParser {
         return bData;
     }
 
-    protected static BData[] parseAll(final String[][] datas) {
+    protected BData[] parseAll(final String[][] datas) {
         BData[] returnList = new BData[datas.length];
         for (int i = 0; i < datas.length; i++) {
             returnList[i] = parseFromlist(datas[i]);
@@ -167,7 +173,7 @@ public class DataParser {
         return returnList;
     }
 
-    protected static BData[] parseAll(final List<String[]> datas) {
+    protected BData[] parseAll(final List<String[]> datas) {
         BData[] returnList = new BData[datas.size()];
         for (int i = 0; i < datas.size(); i++) {
             returnList[i] = parseFromlist(datas.get(i));
