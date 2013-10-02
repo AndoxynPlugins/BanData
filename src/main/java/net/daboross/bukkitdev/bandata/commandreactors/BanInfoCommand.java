@@ -33,11 +33,9 @@ public class BanInfoCommand extends SubCommand {
     private final BanDataPlugin plugin;
 
     public BanInfoCommand( BanDataPlugin plugin ) {
-        super( "baninfo", new String[]{
-            "bi", "i"
-        }, true, "bandata.baninfo", new String[]{
-            "Player"
-        }, "Views Ban Info On a Player" );
+        super( "baninfo", true, "bandata.baninfo", "Views ban info on a player" );
+        addAliases( "bi", "i" );
+        addArgumentNames( "Player" );
         this.plugin = plugin;
     }
 

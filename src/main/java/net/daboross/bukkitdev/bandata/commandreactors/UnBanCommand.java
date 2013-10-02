@@ -40,9 +40,8 @@ public class UnBanCommand extends SubCommand {
     private final BanDataPlugin plugin;
 
     public UnBanCommand( BanDataPlugin plugin ) {
-        super( "unban", true, "bandata.unban", new String[]{
-            "Player"
-        }, "Unbans the given player" );
+        super( "unban", true, "bandata.unban", "Unbans the given player" );
+        addArgumentNames( "Player" );
         this.plugin = plugin;
     }
 

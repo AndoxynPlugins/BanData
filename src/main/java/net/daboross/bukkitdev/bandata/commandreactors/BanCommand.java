@@ -39,9 +39,8 @@ public class BanCommand extends SubCommand {
     private final BanDataPlugin plugin;
 
     public BanCommand( BanDataPlugin plugin ) {
-        super( "ban", true, "bandata.ban", new String[]{
-            "Player", "Reason"
-        }, "Bans A Player With PEX and Records Info." );
+        super( "ban", true, "bandata.ban", "Bans a player and records ban information." );
+        addArgumentNames(  "Player", "Reason" );
         this.plugin = plugin;
     }
 

@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.bandata.commandreactors;
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
 import net.daboross.bukkitdev.bandata.BanDataPlugin;
-import net.daboross.bukkitdev.bandata.DataParser;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.api.PermissionsHelper;
@@ -36,9 +35,8 @@ public class BanClearCommand extends SubCommand {
     private final BanDataPlugin plugin;
 
     public BanClearCommand( BanDataPlugin plugin ) {
-        super( "clearban", true, "bandata.admin.clearban", new String[]{
-            "Player"
-        }, "Clears the last ban off of a Player's ban record." );
+        super( "clearban", true, "bandata.admin.clearban", "Clears the last ban off of a Player's ban record." );
+        addArgumentNames( "Player" );
         this.plugin = plugin;
     }
 

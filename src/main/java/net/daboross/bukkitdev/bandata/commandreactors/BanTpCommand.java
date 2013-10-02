@@ -1,12 +1,24 @@
 /*
- * Copyright (C) 2013 Dabo Ross <www.daboross.net>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.daboross.bukkitdev.bandata.commandreactors;
 
 import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.Ban;
 import net.daboross.bukkitdev.bandata.BanDataPlugin;
-import net.daboross.bukkitdev.bandata.InfoParser;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.playerdata.api.PlayerData;
@@ -26,11 +38,9 @@ public class BanTpCommand extends SubCommand {
     private final BanDataPlugin plugin;
 
     public BanTpCommand( BanDataPlugin plugin ) {
-        super( "bantp", new String[]{
-            "tp", "tpban"
-        }, false, "bandata.bantp", new String[]{
-            "Player"
-        }, "This Command Teleports You To Where Someone Was Banned." );
+        super( "bantp", false, "bandata.bantp", "Teleports you to where you were last banned" );
+        addAliases( "tp", "tpban" );
+        addArgumentNames( "Player" );
         this.plugin = plugin;
     }
 
