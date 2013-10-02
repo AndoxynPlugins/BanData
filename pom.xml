@@ -58,7 +58,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>command-executor-base</artifactId>
-            <version>1.3.0</version>
+            <version>1.5.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -113,8 +113,8 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.bukkit:metrics-lite</include>
-                                    <include>net.daboross.bukkitdev:CommandExecutorBase</include>
+                                    <include>net.daboross.metrics.bukkit:metrics-lite</include>
+                                    <include>net.daboross.bukkitdev:command-executor-base</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
