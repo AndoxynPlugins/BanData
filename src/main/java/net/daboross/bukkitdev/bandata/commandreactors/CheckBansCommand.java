@@ -16,13 +16,13 @@ public class CheckBansCommand extends SubCommand {
 
     private final BanDataPlugin plugin;
 
-    public CheckBansCommand(BanDataPlugin plugin) {
-        super("checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase");
+    public CheckBansCommand( BanDataPlugin plugin ) {
+        super( "checkBans", true, "bandata.admin", "This Command Checks For Users Who Are Banned, But Not In The DataBase" );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender cs, Command cmnd, String string, String string1, String[] strings) {
+    public void runCommand( CommandSender cs, Command cmnd, String string, String string1, String[] strings ) {
         plugin.getBanCheckReloader().goThrough();
     }
 }

@@ -38,69 +38,77 @@ public class BanCommand extends SubCommand {
 
     private final BanDataPlugin plugin;
 
-    public BanCommand(BanDataPlugin plugin) {
-        super("ban", true, "bandata.ban", new String[]{"Player", "Reason"}, "Bans A Player With PEX and Records Info.");
+    public BanCommand( BanDataPlugin plugin ) {
+        super( "ban", true, "bandata.ban", new String[]{
+            "Player", "Reason"
+        }, "Bans A Player With PEX and Records Info." );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length < 2) {
-            sender.sendMessage(ColorList.ERR + "Please specify a player name and a ban reason");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+        if ( subCommandArgs.length < 2 ) {
+            sender.sendMessage( ColorList.ERR + "Please specify a player name and a ban reason" );
+            sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
             return;
         }
-        if (PlayerDataStatic.isPermissionLoaded()) {
-            PlayerData playerToBan = plugin.getPlayerData().getHandler().getPlayerDataPartial(subCommandArgs[0]);
-            if (playerToBan == null) {
-                sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
+        if ( PlayerDataStatic.isPermissionLoaded() ) {
+            PlayerData playerToBan = plugin.getPlayerData().getHandler().getPlayerDataPartial( subCommandArgs[0] );
+            if ( playerToBan == null ) {
+                sender.sendMessage( ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found." );
                 return;
-            } else if (playerToBan.getUsername().equalsIgnoreCase(subCommandArgs[0])) {
-                sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
-                sender.sendMessage(ColorList.REG + "Did you mean " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + "?");
+            } else if ( playerToBan.getUsername().equalsIgnoreCase( subCommandArgs[0] ) ) {
+                sender.sendMessage( ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found." );
+                sender.sendMessage( ColorList.REG + "Did you mean " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + "?" );
                 return;
             }
             Permission p = PlayerDataStatic.getPermissionHandler();
-            StringBuilder reasonBuilder = new StringBuilder(subCommandArgs[1]);
-            for (int i = 2; i < subCommandArgs.length; i++) {
-                reasonBuilder.append(" ").append(subCommandArgs[i]);
+            StringBuilder reasonBuilder = new StringBuilder( subCommandArgs[1] );
+            for ( int i = 2 ; i < subCommandArgs.length ; i++ ) {
+                reasonBuilder.append( " " ).append( subCommandArgs[i] );
             }
             String reason = reasonBuilder.toString();
-            sender.sendMessage(ColorList.REG + "Banning " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + " for " + ColorList.DATA + reason);
-            String[] oldGroups = p.getPlayerGroups((String) null, playerToBan.getUsername());
-            if (oldGroups == null) {
-                oldGroups = new String[]{"Basic"};
-            } else if (oldGroups.length < 2) {
-                if (oldGroups.length == 0 || oldGroups[0].equalsIgnoreCase("Unknown")) {
-                    oldGroups = new String[]{"Basic"};
+            sender.sendMessage( ColorList.REG + "Banning " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + " for " + ColorList.DATA + reason );
+            String[] oldGroups = p.getPlayerGroups( (String) null, playerToBan.getUsername() );
+            if ( oldGroups == null ) {
+                oldGroups = new String[]{
+                    "Basic"
+                };
+            } else if ( oldGroups.length < 2 ) {
+                if ( oldGroups.length == 0 || oldGroups[0].equalsIgnoreCase( "Unknown" ) ) {
+                    oldGroups = new String[]{
+                        "Basic"
+                    };
                 }
             }
-            for (String group : oldGroups) {
-                PlayerDataStatic.getPermissionHandler().playerRemoveGroup((String) null, playerToBan.getUsername(), group);
+            for ( String group : oldGroups ) {
+                PlayerDataStatic.getPermissionHandler().playerRemoveGroup( (String) null, playerToBan.getUsername(), group );
             }
-            PlayerDataStatic.getPermissionHandler().playerAddGroup((String) null, playerToBan.getUsername(), "Banned");
+            PlayerDataStatic.getPermissionHandler().playerAddGroup( (String) null, playerToBan.getUsername(), "Banned" );
             Ban ban;
-            if (sender instanceof Player) {
+            if ( sender instanceof Player ) {
                 Player player = (Player) sender;
                 Location loc = player.getLocation();
-                ban = new Ban(player.getName(), reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis());
+                ban = new Ban( player.getName(), reason, oldGroups, (long) loc.getX(), (long) loc.getY(), (long) loc.getZ(), loc.getWorld().getName(), System.currentTimeMillis() );
             } else {
-                ban = new Ban(reason, oldGroups, System.currentTimeMillis());
+                ban = new Ban( reason, oldGroups, System.currentTimeMillis() );
             }
-            String[] rawData = playerToBan.getExtraData("bandata");
+            String[] rawData = playerToBan.getExtraData( "bandata" );
             BData banData;
-            if (rawData == null) {
-                Ban[] banList = new Ban[]{ban};
-                banData = new BData(banList);
+            if ( rawData == null ) {
+                Ban[] banList = new Ban[]{
+                    ban
+                };
+                banData = new BData( banList );
             } else {
-                banData = plugin.getParser().parseFromlist(rawData);
-                banData.addBan(ban);
+                banData = plugin.getParser().parseFromlist( rawData );
+                banData.addBan( ban );
             }
-            String[] newRawBanData = plugin.getParser().parseToList(banData);
-            playerToBan.addExtraData("bandata", newRawBanData);
-            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
+            String[] newRawBanData = plugin.getParser().parseToList( banData );
+            playerToBan.addExtraData( "bandata", newRawBanData );
+            Bukkit.getServer().broadcastMessage( String.format( ColorList.BROADCAST_NAME_FORMAT, "BanData" ) + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName() );
         } else {
-            sender.sendMessage(ColorList.ERR + "Permission handler not found");
+            sender.sendMessage( ColorList.ERR + "Permission handler not found" );
         }
     }
 }

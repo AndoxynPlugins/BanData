@@ -32,7 +32,7 @@ public class Ban {
     private final String[] oldGroups;
     private final String banner;
 
-    public Ban(String banner, String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp) {
+    public Ban( String banner, String reason, String[] oldGroups, long xPos, long yPos, long zPos, String world, long timeStamp ) {
         this.reason = reason;
         this.xPos = xPos;
         this.yPos = yPos;
@@ -44,7 +44,7 @@ public class Ban {
         this.banner = banner;
     }
 
-    public Ban(String reason, String oldGroups[], long timeStamp) {
+    public Ban( String reason, String oldGroups[], long timeStamp ) {
         this.reason = reason;
         this.xPos = 0;
         this.yPos = 0;

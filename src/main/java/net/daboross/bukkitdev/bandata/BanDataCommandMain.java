@@ -37,19 +37,19 @@ public class BanDataCommandMain {
     private final CommandExecutorBase commandExecutorBase;
     private final BanDataPlugin plugin;
 
-    protected BanDataCommandMain(BanDataPlugin plugin) {
+    protected BanDataCommandMain( BanDataPlugin plugin ) {
         this.plugin = plugin;
-        commandExecutorBase = new CommandExecutorBase("bandata.help");
-        commandExecutorBase.addSubCommand(new BanCommand(plugin));
-        commandExecutorBase.addSubCommand(new BanInfoCommand(plugin));
-        commandExecutorBase.addSubCommand(new BanTpCommand(plugin));
-        commandExecutorBase.addSubCommand(new ListCommand(plugin));
-        commandExecutorBase.addSubCommand(new CheckBansCommand(plugin));
-        commandExecutorBase.addSubCommand(new UnBanCommand(plugin));
-        commandExecutorBase.addSubCommand(new BanClearCommand(plugin));
+        commandExecutorBase = new CommandExecutorBase( "bandata.help" );
+        commandExecutorBase.addSubCommand( new BanCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new BanInfoCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new BanTpCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new ListCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new CheckBansCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new UnBanCommand( plugin ) );
+        commandExecutorBase.addSubCommand( new BanClearCommand( plugin ) );
     }
 
-    protected void registerCommand(PluginCommand command) {
-        command.setExecutor(commandExecutorBase);
+    protected void registerCommand( PluginCommand command ) {
+        command.setExecutor( commandExecutorBase );
     }
 }

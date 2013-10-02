@@ -32,45 +32,49 @@ public class BanDataJoinListener implements Listener {
 
     private final BanDataPlugin plugin;
 
-    public BanDataJoinListener(BanDataPlugin main) {
+    public BanDataJoinListener( BanDataPlugin main ) {
         this.plugin = main;
     }
 
-    public void onPlayerDataPlayerJoin(PlayerDataPlayerJoinEvent pdpje) {
-        if (PermissionsHelper.userInGroup(pdpje.getPlayerData().getUsername(), "Banned")) {
-            final String[] data = pdpje.getPlayerData().getExtraData("bandata");
+    public void onPlayerDataPlayerJoin( PlayerDataPlayerJoinEvent pdpje ) {
+        if ( PermissionsHelper.userInGroup( pdpje.getPlayerData().getUsername(), "Banned" ) ) {
+            final String[] data = pdpje.getPlayerData().getExtraData( "bandata" );
             final Player p = pdpje.getPlayer();
             Runnable r;
-            if (data == null) {
-                String[] newData = plugin.getParser().parseToList(new BData(new Ban[]{new Ban("Unknown Reason", new String[]{"Basic"}, System.currentTimeMillis())}));
-                pdpje.getPlayerData().addExtraData("bandata", newData);
-                plugin.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", p.getName());
+            if ( data == null ) {
+                String[] newData = plugin.getParser().parseToList( new BData( new Ban[]{
+                    new Ban( "Unknown Reason", new String[]{
+                        "Basic"
+                    }, System.currentTimeMillis() )
+                } ) );
+                pdpje.getPlayerData().addExtraData( "bandata", newData );
+                plugin.getLogger().log( Level.INFO, "{0} has an Unrecorded Ban!", p.getName() );
                 r = new Runnable() {
                     @Override
                     public void run() {
-                        p.sendMessage(ColorList.REG + "You are currently Banned! You can not build or destroy anything while you are banned.");
-                        p.sendMessage(ColorList.REG + "To request an unban, please use " + ColorList.CMD + "/mad");
+                        p.sendMessage( ColorList.REG + "You are currently Banned! You can not build or destroy anything while you are banned." );
+                        p.sendMessage( ColorList.REG + "To request an unban, please use " + ColorList.CMD + "/mad" );
                     }
                 };
             } else {
-                final BData bd = plugin.getParser().parseFromlist(data);
+                final BData bd = plugin.getParser().parseFromlist( data );
                 r = new Runnable() {
                     @Override
                     public void run() {
-                        p.sendMessage(ColorList.REG + "You are currently Banned! You can not build or destroy anything while you are banned.");
-                        if (bd != null) {
+                        p.sendMessage( ColorList.REG + "You are currently Banned! You can not build or destroy anything while you are banned." );
+                        if ( bd != null ) {
                             int numberOfBans = bd.getBans().length;
-                            if (numberOfBans == 1) {
-                                p.sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + (p.getName().length() <= 3 ? p.getName() : p.getName().substring(0, 3)));
-                            } else if (numberOfBans > 1) {
-                                p.sendMessage(ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + (p.getName().length() <= 3 ? p.getName() : p.getName().substring(0, 3)) + " " + numberOfBans);
+                            if ( numberOfBans == 1 ) {
+                                p.sendMessage( ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + ( p.getName().length() <= 3 ? p.getName() : p.getName().substring( 0, 3 ) ) );
+                            } else if ( numberOfBans > 1 ) {
+                                p.sendMessage( ColorList.REG + "To see the ban reason, use " + ColorList.CMD + "/bd " + ColorList.SUBCMD + "tp " + ColorList.ARGS + ( p.getName().length() <= 3 ? p.getName() : p.getName().substring( 0, 3 ) ) + " " + numberOfBans );
                             }
                         }
-                        p.sendMessage(ColorList.REG + "To request an unban, please use " + ColorList.CMD + "/mad");
+                        p.sendMessage( ColorList.REG + "To request an unban, please use " + ColorList.CMD + "/mad" );
                     }
                 };
             }
-            Bukkit.getScheduler().runTaskLater(plugin, r, 15);
+            Bukkit.getScheduler().runTaskLater( plugin, r, 15 );
         }
     }
 }

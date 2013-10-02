@@ -39,94 +39,96 @@ public class UnBanCommand extends SubCommand {
 
     private final BanDataPlugin plugin;
 
-    public UnBanCommand(BanDataPlugin plugin) {
-        super("unban", true, "bandata.unban", new String[]{"Player"}, "Unbans the given player");
+    public UnBanCommand( BanDataPlugin plugin ) {
+        super( "unban", true, "bandata.unban", new String[]{
+            "Player"
+        }, "Unbans the given player" );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length < 1) {
-            sender.sendMessage(ColorList.ERR + "Please specify a player.");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+        if ( subCommandArgs.length < 1 ) {
+            sender.sendMessage( ColorList.ERR + "Please specify a player." );
+            sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
             return;
         }
-        if (subCommandArgs.length > 1) {
-            sender.sendMessage(ColorList.ERR + "To many arguments");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
+        if ( subCommandArgs.length > 1 ) {
+            sender.sendMessage( ColorList.ERR + "To many arguments" );
+            sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
             return;
         }
-        PlayerData pd = plugin.getPlayerData().getHandler().getPlayerDataPartial(subCommandArgs[0]);
-        if (pd == null) {
-            sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
+        PlayerData pd = plugin.getPlayerData().getHandler().getPlayerDataPartial( subCommandArgs[0] );
+        if ( pd == null ) {
+            sender.sendMessage( ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found" );
             return;
         }
         Permission p = PlayerDataStatic.getPermissionHandler();
-        if (!p.playerInGroup((String) null, pd.getUsername(), "Banned")) {
-            sender.sendMessage(ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is not currently banned");
+        if ( !p.playerInGroup( (String) null, pd.getUsername(), "Banned" ) ) {
+            sender.sendMessage( ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is not currently banned" );
             return;
         }
-        String[] data = pd.getExtraData("bandata");
-        if (data == null) {
-            sender.sendMessage(ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pd.getUsername());
+        String[] data = pd.getExtraData( "bandata" );
+        if ( data == null ) {
+            sender.sendMessage( ColorList.ERR + "No bandata found for player " + ColorList.ERR_ARGS + pd.getUsername() );
             return;
         }
-        BData banData = plugin.getParser().parseFromlist(data);
-        if (banData == null) {
-            sender.sendMessage(ColorList.ERR + "Error parsing BanData");
+        BData banData = plugin.getParser().parseFromlist( data );
+        if ( banData == null ) {
+            sender.sendMessage( ColorList.ERR + "Error parsing BanData" );
             return;
         }
         Ban[] bans = banData.getBans();
         String[] permissionGroupsToSet = null;
-        for (int i = bans.length - 1; i >= 0; i--) {
+        for ( int i = bans.length - 1 ; i >= 0 ; i-- ) {
             Ban b = bans[i];
             String[] oldGroups = b.getOldGroups();
-            if (oldGroups.length == 0) {
+            if ( oldGroups.length == 0 ) {
                 continue;
             }
             List<String> groups = new ArrayList<String>();
-            for (String str : oldGroups) {
-                if (!(str.equalsIgnoreCase("banned")) || (groups.contains(str))) {
-                    groups.add(str);
+            for ( String str : oldGroups ) {
+                if ( !( str.equalsIgnoreCase( "banned" ) ) || ( groups.contains( str ) ) ) {
+                    groups.add( str );
                 }
             }
-            if (!groups.isEmpty()) {
-                permissionGroupsToSet = groups.toArray(new String[groups.size()]);
+            if ( !groups.isEmpty() ) {
+                permissionGroupsToSet = groups.toArray( new String[ groups.size() ] );
                 break;
             }
         }
-        if (permissionGroupsToSet == null) {
-            sender.sendMessage(ColorList.ERR + "Error parsing BanData. No previous groups found");
+        if ( permissionGroupsToSet == null ) {
+            sender.sendMessage( ColorList.ERR + "Error parsing BanData. No previous groups found" );
             return;
         }
-        if (!(PlayerDataStatic.isPermissionLoaded())) {
-            sender.sendMessage(ColorList.ERR + "Vault permission handler not found");
+        if ( !( PlayerDataStatic.isPermissionLoaded() ) ) {
+            sender.sendMessage( ColorList.ERR + "Vault permission handler not found" );
         }
         List<String> rankRecord;
-        if (pd.hasExtraData("rankrecord")) {
-            rankRecord = new ArrayList<String>(Arrays.asList(pd.getExtraData("rankrecord")));
+        if ( pd.hasExtraData( "rankrecord" ) ) {
+            rankRecord = new ArrayList<String>( Arrays.asList( pd.getExtraData( "rankrecord" ) ) );
         } else {
             rankRecord = new ArrayList<String>();
         }
-        PlayerDataStatic.getPermissionHandler().playerRemoveGroup((String) null, pd.getUsername(), "Banned");
-        for (String group : permissionGroupsToSet) {
-            PlayerDataStatic.getPermissionHandler().playerAddGroup((String) null, pd.getUsername(), group);
+        PlayerDataStatic.getPermissionHandler().playerRemoveGroup( (String) null, pd.getUsername(), "Banned" );
+        for ( String group : permissionGroupsToSet ) {
+            PlayerDataStatic.getPermissionHandler().playerAddGroup( (String) null, pd.getUsername(), group );
         }
-        rankRecord.add("SET " + sender.getName() + " " + Arrays.toString(permissionGroupsToSet) + " " + System.currentTimeMillis());
-        String[] finalRankRecord = rankRecord.toArray(new String[rankRecord.size()]);
-        pd.addExtraData("rankrecord", finalRankRecord);
-        Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + pd.getUsername() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName());
-        sender.sendMessage(ColorList.NAME + pd.getUsername() + " has been set to: " + getString(permissionGroupsToSet));
+        rankRecord.add( "SET " + sender.getName() + " " + Arrays.toString( permissionGroupsToSet ) + " " + System.currentTimeMillis() );
+        String[] finalRankRecord = rankRecord.toArray( new String[ rankRecord.size() ] );
+        pd.addExtraData( "rankrecord", finalRankRecord );
+        Bukkit.getServer().broadcastMessage( String.format( ColorList.BROADCAST_NAME_FORMAT, "BanData" ) + ColorList.NAME + pd.getUsername() + ColorList.BROADCAST + " was unbanned by " + ColorList.NAME + sender.getName() );
+        sender.sendMessage( ColorList.NAME + pd.getUsername() + " has been set to: " + getString( permissionGroupsToSet ) );
     }
 
-    private String getString(String[] strings) {
-        if (strings.length == 0) {
+    private String getString( String[] strings ) {
+        if ( strings.length == 0 ) {
             return "None";
         }
-        StringBuilder resultBuilder = new StringBuilder(strings[0]);
-        for (int i = 1; i < strings.length; i++) {
+        StringBuilder resultBuilder = new StringBuilder( strings[0] );
+        for ( int i = 1 ; i < strings.length ; i++ ) {
             String string = strings[i];
-            resultBuilder.append(", ").append(string);
+            resultBuilder.append( ", " ).append( string );
         }
         return resultBuilder.toString();
     }
