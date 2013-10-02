@@ -1,4 +1,4 @@
 BanData
 =======
 
-Ban Data Bukkit Plugin Using Player Data API
+BanData bukkit plugin using PlayerData API
