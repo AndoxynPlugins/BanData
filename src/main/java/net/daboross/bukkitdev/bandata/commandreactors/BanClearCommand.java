@@ -26,62 +26,58 @@ import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- * @author daboross
- */
 public class BanClearCommand extends SubCommand {
 
     private final BanDataPlugin plugin;
 
-    public BanClearCommand( BanDataPlugin plugin ) {
-        super( "clearban", true, "bandata.admin.clearban", "Clears the last ban off of a Player's ban record." );
-        addArgumentNames( "Player" );
+    public BanClearCommand(BanDataPlugin plugin) {
+        super("clearban", true, "bandata.admin.clearban", "Clears the last ban off of a Player's ban record.");
+        addArgumentNames("Player");
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( subCommandArgs.length < 1 ) {
-            sender.sendMessage( ColorList.ERR + "Please specify a player" );
-            sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        if (subCommandArgs.length < 1) {
+            sender.sendMessage(ColorList.ERR + "Please specify a player");
+            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        if ( subCommandArgs.length > 1 ) {
-            sender.sendMessage( ColorList.ERR + "To many arguments" );
-            sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
+        if (subCommandArgs.length > 1) {
+            sender.sendMessage(ColorList.ERR + "To many arguments");
+            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        PlayerData pd = plugin.getPlayerData().getHandler().getPlayerDataPartial( subCommandArgs[0] );
-        if ( pd == null ) {
-            sender.sendMessage( ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found" );
+        PlayerData pd = plugin.getPlayerData().getHandler().getPlayerDataPartial(subCommandArgs[0]);
+        if (pd == null) {
+            sender.sendMessage(ColorList.ERR + "Player " + ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " not found");
             return;
         }
-        if ( PermissionsHelper.userInGroup( pd.getUsername(), "Banned" ) ) {
-            sender.sendMessage( ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is currently banned" );
+        if (PermissionsHelper.userInGroup(pd.getUsername(), "Banned")) {
+            sender.sendMessage(ColorList.ERR_ARGS + pd.getUsername() + ColorList.ERR + " is currently banned");
             return;
         }
-        String[] data = pd.getExtraData( "bandata" );
-        if ( data == null ) {
-            sender.sendMessage( ColorList.ERR + "No BanData found for " + ColorList.ERR_ARGS + pd.getUsername() );
+        String[] data = pd.getExtraData("bandata");
+        if (data == null) {
+            sender.sendMessage(ColorList.ERR + "No BanData found for " + ColorList.ERR_ARGS + pd.getUsername());
             return;
         }
-        BData banData = plugin.getParser().parseFromlist( data );
-        if ( banData == null ) {
-            sender.sendMessage( ColorList.ERR + "Error parsing BanData" );
+        BData banData = plugin.getParser().parseFromlist(data);
+        if (banData == null) {
+            sender.sendMessage(ColorList.ERR + "Error parsing BanData");
             return;
         }
         Ban[] bans = banData.getBans();
-        if ( bans.length == 1 ) {
-            pd.removeExtraData( "bandata" );
-            sender.sendMessage( ColorList.NAME + pd.getUsername() + ColorList.REG + "'s ban record has been cleared" );
+        if (bans.length == 1) {
+            pd.removeExtraData("bandata");
+            sender.sendMessage(ColorList.NAME + pd.getUsername() + ColorList.REG + "'s ban record has been cleared");
         } else {
-            Ban[] newBans = new Ban[ bans.length - 1 ];
-            System.arraycopy( bans, 0, newBans, 0, bans.length - 1 );
-            BData newBanData = new BData( newBans );
-            String[] newData = plugin.getParser().parseToList( newBanData );
-            pd.addExtraData( "bandata", newData );
-            sender.sendMessage( ColorList.NAME + pd.getUsername() + ColorList.REG + "'s last ban has been cleared." );
+            Ban[] newBans = new Ban[bans.length - 1];
+            System.arraycopy(bans, 0, newBans, 0, bans.length - 1);
+            BData newBanData = new BData(newBans);
+            String[] newData = plugin.getParser().parseToList(newBanData);
+            pd.addExtraData("bandata", newData);
+            sender.sendMessage(ColorList.NAME + pd.getUsername() + ColorList.REG + "'s last ban has been cleared.");
         }
     }
 }

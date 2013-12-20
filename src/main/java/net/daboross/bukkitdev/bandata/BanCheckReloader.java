@@ -22,15 +22,11 @@ import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import net.daboross.bukkitdev.playerdata.api.PlayerDataStatic;
 import net.milkbowl.vault.permission.Permission;
 
-/**
- *
- * @author daboross
- */
 public class BanCheckReloader {
 
     private BanDataPlugin plugin;
 
-    public BanCheckReloader( BanDataPlugin bd ) {
+    public BanCheckReloader(BanDataPlugin bd) {
         plugin = bd;
     }
 
@@ -41,16 +37,16 @@ public class BanCheckReloader {
     public void goThrough() {
         List<? extends PlayerData> playerDatas = plugin.getPlayerData().getHandler().getAllPlayerDatas();
         Permission permissionHandler = PlayerDataStatic.getPermissionHandler();
-        for ( int i = 0 ; i < playerDatas.size() ; i++ ) {
-            PlayerData current = playerDatas.get( i );
-            if ( permissionHandler.playerInGroup( (String) null, current.getUsername(), "Banned" ) ) {
-                if ( !current.hasExtraData( "bandata" ) ) {
-                    current.addExtraData( "bandata", plugin.getParser().parseToList( new BData( new Ban[]{
-                        new Ban( "Unknown Reason", new String[]{
-                            "Basic"
-                        }, System.currentTimeMillis() )
-                    } ) ) );
-                    plugin.getLogger().log( Level.INFO, "{0} has an Unrecorded Ban!", current.getUsername() );
+        for (int i = 0; i < playerDatas.size(); i++) {
+            PlayerData current = playerDatas.get(i);
+            if (permissionHandler.playerInGroup((String) null, current.getUsername(), "Banned")) {
+                if (!current.hasExtraData("bandata")) {
+                    current.addExtraData("bandata", plugin.getParser().parseToList(new BData(new Ban[]{
+                            new Ban("Unknown Reason", new String[]{
+                                    "Basic"
+                            }, System.currentTimeMillis())
+                    })));
+                    plugin.getLogger().log(Level.INFO, "{0} has an Unrecorded Ban!", current.getUsername());
                 }
             }
         }

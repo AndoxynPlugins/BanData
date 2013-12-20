@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.2-R1.0</version>
+            <version>1.6.4-R2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>playerdata-api</artifactId>
-            <version>3-SNAPSHOT</version>
+            <version>2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -66,6 +66,17 @@
             <artifactId>metrics-lite</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.daboross.json</groupId>
+            <artifactId>json</artifactId>
+            <version>1.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.daboross.bukkitdev</groupId>
+            <artifactId>mysql-map-bukkit</artifactId>
+            <version></version>
         </dependency>
     </dependencies>
     <repositories>

@@ -16,22 +16,28 @@
  */
 package net.daboross.bukkitdev.bandata.commandreactors;
 
+import java.util.List;
+import net.daboross.bukkitdev.bandata.BData;
 import net.daboross.bukkitdev.bandata.BanDataPlugin;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.playerdata.api.PlayerData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class CheckBansCommand extends SubCommand {
+public class BanMigrateCommand extends SubCommand {
 
     private final BanDataPlugin plugin;
 
-    public CheckBansCommand(BanDataPlugin plugin) {
-        super("checkBans", true, "bandata.admin", "Checks for players who have been banned but are not in the databases");
+    public BanMigrateCommand(BanDataPlugin plugin) {
+        super("migrate", true, "bandata.banmigrate", "Copy database to SQL");
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender cs, Command cmnd, String string, String string1, String[] strings) {
-        plugin.getBanCheckReloader().goThrough();
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        List<? extends PlayerData> banned = plugin.getPlayerData().getHandler().getAllPlayerDatasWithExtraData(("bandata"));
+        for (PlayerData pd : banned) {
+            BData bans = plugin.getParser().parseFromlist(pd.getExtraData("bandata"));
+        }
     }
 }

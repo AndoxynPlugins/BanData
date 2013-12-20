@@ -25,10 +25,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
-/**
- *
- * @author daboross
- */
 public class BanDataPlugin extends JavaPlugin {
 
     private PlayerDataPlugin playerDataPlugin;
@@ -40,43 +36,43 @@ public class BanDataPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Plugin pluginPlayerData = Bukkit.getPluginManager().getPlugin( "PlayerData" );
-        if ( pluginPlayerData == null ) {
-            getLogger().log( Level.SEVERE, "PlayerData Not Found!" );
+        Plugin pluginPlayerData = Bukkit.getPluginManager().getPlugin("PlayerData");
+        if (pluginPlayerData == null) {
+            getLogger().log(Level.SEVERE, "PlayerData Not Found!");
         } else {
-            if ( pluginPlayerData instanceof PlayerDataPlugin ) {
+            if (pluginPlayerData instanceof PlayerDataPlugin) {
                 playerDataPlugin = (PlayerDataPlugin) pluginPlayerData;
             } else {
-                getLogger().log( Level.SEVERE, "PlayerData not instanceof PlayerData!" );
+                getLogger().log(Level.SEVERE, "PlayerData not instanceof PlayerData!");
             }
         }
-        if ( playerDataPlugin == null ) {
-            Bukkit.getPluginManager().disablePlugin( this );
+        if (playerDataPlugin == null) {
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        parser = new DataParser( this );
-        info = new InfoParser( this );
-        bdce = new BanDataCommandMain( this );
-        PluginCommand bandata = getCommand( "bd" );
-        if ( bandata == null ) {
-            getLogger().log( Level.WARNING, "/bd command not found! Is another plugin using it?" );
+        parser = new DataParser(this);
+        info = new InfoParser(this);
+        bdce = new BanDataCommandMain(this);
+        PluginCommand bandata = getCommand("bd");
+        if (bandata == null) {
+            getLogger().log(Level.WARNING, "/bd command not found! Is another plugin using it?");
         } else {
-            bdce.registerCommand( bandata );
+            bdce.registerCommand(bandata);
         }
-        banCheckReloader = new BanCheckReloader( this );
+        banCheckReloader = new BanCheckReloader(this);
         banCheckReloader.goThrough();
-        bdjl = new BanDataJoinListener( this );
-        Bukkit.getPluginManager().registerEvents( bdjl, this );
+        bdjl = new BanDataJoinListener(this);
+        Bukkit.getPluginManager().registerEvents(bdjl, this);
         MetricsLite metrics = null;
         try {
-            metrics = new MetricsLite( this );
-        } catch ( IOException ex ) {
-            getLogger().log( Level.WARNING, "Unable to create Metrics", ex );
+            metrics = new MetricsLite(this);
+        } catch (IOException ex) {
+            getLogger().log(Level.WARNING, "Unable to create Metrics", ex);
         }
-        if ( metrics != null ) {
+        if (metrics != null) {
             metrics.start();
         }
-        getLogger().log( Level.INFO, "BanData Fully Enabled" );
+        getLogger().log(Level.INFO, "BanData Fully Enabled");
     }
 
     @Override
