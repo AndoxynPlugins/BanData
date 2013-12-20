@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.bandata;
 import net.daboross.bukkitdev.bandata.commandreactors.BanClearCommand;
 import net.daboross.bukkitdev.bandata.commandreactors.BanCommand;
 import net.daboross.bukkitdev.bandata.commandreactors.BanInfoCommand;
+import net.daboross.bukkitdev.bandata.commandreactors.BanMigrateCommand;
 import net.daboross.bukkitdev.bandata.commandreactors.BanTpCommand;
 import net.daboross.bukkitdev.bandata.commandreactors.CheckBansCommand;
 import net.daboross.bukkitdev.bandata.commandreactors.ListCommand;
@@ -41,6 +42,7 @@ public class BanDataCommandMain {
         commandExecutorBase.addSubCommand(new CheckBansCommand(plugin));
         commandExecutorBase.addSubCommand(new UnBanCommand(plugin));
         commandExecutorBase.addSubCommand(new BanClearCommand(plugin));
+        commandExecutorBase.addSubCommand(new BanMigrateCommand(plugin));
     }
 
     protected void registerCommand(PluginCommand command) {
