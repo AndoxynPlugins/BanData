@@ -52,7 +52,7 @@ public class BanCommand extends SubCommand {
             if (playerToBan == null) {
                 sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
                 return;
-            } else if (playerToBan.getUsername().equalsIgnoreCase(subCommandArgs[0])) {
+            } else if (!playerToBan.getUsername().equalsIgnoreCase(subCommandArgs[0])) {
                 sender.sendMessage(ColorList.REG + "No player who's full name matches " + ColorList.NAME + subCommandArgs[0] + ColorList.REG + " was found.");
                 sender.sendMessage(ColorList.REG + "Did you mean " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + "?");
                 return;
@@ -66,14 +66,10 @@ public class BanCommand extends SubCommand {
             sender.sendMessage(ColorList.REG + "Banning " + ColorList.NAME + playerToBan.getUsername() + ColorList.REG + " for " + ColorList.DATA + reason);
             String[] oldGroups = p.getPlayerGroups((String) null, playerToBan.getUsername());
             if (oldGroups == null) {
-                oldGroups = new String[]{
-                        "Basic"
-                };
+                oldGroups = new String[]{"Basic"};
             } else if (oldGroups.length < 2) {
                 if (oldGroups.length == 0 || oldGroups[0].equalsIgnoreCase("Unknown")) {
-                    oldGroups = new String[]{
-                            "Basic"
-                    };
+                    oldGroups = new String[]{"Basic"};
                 }
             }
             for (String group : oldGroups) {
@@ -91,9 +87,7 @@ public class BanCommand extends SubCommand {
             String[] rawData = playerToBan.getExtraData("bandata");
             BData banData;
             if (rawData == null) {
-                Ban[] banList = new Ban[]{
-                        ban
-                };
+                Ban[] banList = new Ban[]{ban};
                 banData = new BData(banList);
             } else {
                 banData = plugin.getParser().parseFromlist(rawData);
@@ -101,7 +95,7 @@ public class BanCommand extends SubCommand {
             }
             String[] newRawBanData = plugin.getParser().parseToList(banData);
             playerToBan.addExtraData("bandata", newRawBanData);
-            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "BanData") + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
+            Bukkit.getServer().broadcastMessage(String.format(ColorList.BROADCAST_NAME_FORMAT, "$") + ColorList.NAME + playerToBan.getUsername() + ColorList.BROADCAST + " was just banned for " + ColorList.DATA + reason + ColorList.BROADCAST + " by " + ColorList.NAME + sender.getName());
         } else {
             sender.sendMessage(ColorList.ERR + "Permission handler not found");
         }

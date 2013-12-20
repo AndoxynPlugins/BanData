@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.bandata;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.bandata.commandreactors.BanMigrateCommand;
 import net.daboross.bukkitdev.playerdata.api.PlayerDataPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
@@ -77,6 +78,7 @@ public class BanDataPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        BanMigrateCommand.getConnection().finishUp();
     }
 
     public PlayerDataPlugin getPlayerData() {
