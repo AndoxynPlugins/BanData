@@ -77,6 +77,7 @@
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>mysql-map-bukkit</artifactId>
             <version>0.0.2-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <repositories>
@@ -122,12 +123,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.daboross.metrics.bukkit:metrics-lite</include>
-                                    <include>net.daboross.bukkitdev:command-executor-base</include>
-                                </includes>
-                            </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.mcstats</pattern>

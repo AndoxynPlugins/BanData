@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public class BanDataCommandMain {
         commandExecutorBase.addSubCommand(new BanClearCommand(plugin));
         commandExecutorBase.addSubCommand(new BanMigrateCommand(plugin));
     }
+
 
     protected void registerCommand(PluginCommand command) {
         command.setExecutor(commandExecutorBase);
